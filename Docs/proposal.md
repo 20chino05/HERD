@@ -1,7 +1,7 @@
-# Fall Project Proposal – Open Herd (Draft v1)
+# Fall Project Proposal #2 – Open Herd (Draft)
 
-> **Draft (updated October 19, 2026).** Updated after the October 19 advisor check-in, which
-> narrowed the scope to a security camera swarm. Nothing here is final. Hardware changes this use
+> **Draft (updated November 2, 2026).** Updated after the October 19 advisor check-in, which
+> narrowed the scope to a security camera swarm, and again to match the Proposal #2 schedule. Nothing here is final. Hardware changes this use
 > case implies are marked as **disclaimers** for the hardware team (Nader and Samuel) to decide.
 > Section headings follow the EECS 159 proposal template.
 
@@ -83,7 +83,7 @@ The hardware stays the same across uses, and only the software changes.
 | Use case | What the units would do | Status |
 |---|---|---|
 | Security and anti-theft swarm | Track a suspicious person and hand them off between cameras | **The demo** (chosen October 19) |
-| Crowd monitoring | Count people in each camera's view and share the counts to spot bottlenecks | A later job for the same hardware |
+| Crowd monitoring | Count people in each camera's view and share the counts to spot bottlenecks | Winter Weeks 7–9: the same units reprogrammed; also the backup demo |
 | Traffic counting | Summarize foot or vehicle traffic | A later job for the same hardware |
 | Plate alerts; drone piggyback (the same unit carried on a drone) | Ideas from earlier drafts | Set aside for now |
 
@@ -161,10 +161,10 @@ These come from the October 19 use case. The hardware team decides all of them.
   be needed. It could still serve as a backup alert link.
 - **The custom board (V1).** For this use case, V1 would likely need a servo header, a 5 V servo
   supply, and a radio or Ethernet. That makes the hardware plan's ~$100-per-unit V1 target harder.
-- **Where the demo runs.** The software schedule assumes the end-of-Winter demo runs on dev boards
-  (V0), with running everything on the custom board as a software stretch goal. The hardware timeline
-  (schematic draft in Week 5, a working V0 and V1 ordered by Week 10, Winter integration on the
-  custom board) stays as the hardware team wrote it.
+- **Where the demo runs.** The software schedule moves onto the custom board in Winter Weeks 1–3,
+  matching the hardware timeline (schematic draft in Week 5, a working V0 and V1 ordered by Week 10,
+  Winter integration on the custom board). If the custom board is late, the software keeps running
+  on the dev boards (V0) so the demo isn't blocked.
 - **Cost.** The added parts put the rough Phase 1 estimate at about $160–190 per unit with a color
   camera, before power parts, cables, the case, tax, and shipping (more if LoRa is kept). This ties
   into the advisor's October 12 note to watch costs.
@@ -182,41 +182,64 @@ The central station can be a team laptop.
 per person per week, software has an estimated 148 hands-on hours across Fall and Winter after
 meetings and write-ups. The must-have work below is estimated at about 135–145 hours, including extra
 time for learning. It only fits if we build on ST's existing example for our board, freeze the
-must-have list, and have cameras by about Fall Week 6 and pan/tilt kits by Week 7.
+must-have list, and have cameras by about Fall Week 6 and a pan/tilt mount by mid-November (Fall Week 8).
 
 **Scope tiers**
 
-- **Must have (the end-of-Winter demo):** two identical units on dev boards. Each finds and tracks a
+- **Must have (the end-of-Winter demo):** two identical units (custom boards, or dev boards if the custom board is late). Each finds and tracks a
   person on its own chip, starts tracking on loitering, turns to follow, and hands off to the other,
   which turns and picks the person up. A laptop records the video and logs every event.
 - **Should have:** confirming the same person by appearance during a handoff; a third unit for a
   chain handoff; a simple "item removed" theft trigger; a recording viewer with automatic deletion
   and an access log; full measurements (frame rate, handoff delay, success rate).
-- **Stretch:** video over Ethernet or Wi-Fi; AI-based theft detection; running everything on the
-  custom board within Winter; using the extra sensors on ST's B-CAMS-IMX camera bundle (an IMU and a
+- **Stretch:** video over Ethernet or Wi-Fi; AI-based theft detection; using the extra sensors on ST's B-CAMS-IMX camera bundle (an IMU and a
   distance sensor), if that camera is chosen, in response to the advisor's "add sensors" note.
 
-**Software plan (estimates)**
+**Software plan (estimates, from Proposal #2)**
 
-- **Fall Weeks 4–5:** install ST's tools and build its re-identification example; write the
-  message format between units; get two ESP32s talking over ESP-NOW; submit the ZOT IRB
-  self-determination with the advisor.
-- **Fall Weeks 6–7:** camera running with person tracking on the board; servo control and a basic
-  follow; the link from the board to its ESP32; the handoff state logic.
-- **Fall Weeks 8–10:** a smoother follow; a first version of the central station that records and
-  logs; a one-unit demo that tracks a person, follows them, and sends "heading your way" to a
-  neighbor that turns.
-- **Winter Weeks 1–3:** bring up the second unit with the same software; the loitering trigger; a
-  full two-unit handoff (the must-have milestone).
-- **Winter Weeks 4–6:** robustness checks; if the must-have is solid, add appearance confirmation
-  and one more should-have.
-- **Winter Weeks 7–10:** measurements, rehearsals, a backup recording of the demo, and the final
-  report.
+One owner per task, at about 6 hours per person per week (3 in Thanksgiving week), about 39 hours
+each in Fall. Weeks 4–5 have already passed.
 
-**Plan B:** if the two-unit handoff isn't working by Winter Week 4, drop every should-have and
-finish the must-haves. The software plan already targets dev boards for the demo, so a late custom
-board doesn't block it. This follows
-the advisor's October 12 note to have a backup plan.
+| Fall week | Devin | Aaron |
+|---|---|---|
+| 4 (Oct 19–23) | Install ST's AI tools and run its person-detection model on a laptop | Set up the STM32N6 tools, run a test program on the dev board, draft the first messages between units |
+| 5 (Oct 26–30) | Accuracy check on a free dataset at the board's image size | Two ESP32s talking over ESP-NOW; confirm a handoff message fits in one message |
+| 6 (Nov 2–6) | Test ST's person-matching model on a laptop with a free multi-camera dataset; camera and detection on the board once it arrives | Connect an ESP32 to the dev board and send a test message from the board |
+| 7 (Nov 9–13) | Run ST's tracking demo on the board; frames per second with 1, 3, and 5 people | Laptop base station that logs events with the time |
+| 8 (Nov 16–20) | Flag someone lingering in one area (team members only until IRB) | Servo control from the dev board (pan/tilt mount from the hardware team) |
+| 9 (Nov 23–27) | First pass at following the person with the servos | Send "heading your way" when the person reaches the edge of the turn range |
+| 10 (Nov 30–Dec 4) | One-camera demo: spot lingering, follow, and log; AI write-up | Handoff demo with a stand-in neighbor (an ESP32 with a servo); messaging write-up |
+
+- **Milestone 1 (end of Fall Week 6):** person detection on the dev board; ESP32s sending messages over ESP-NOW.
+- **Milestone 2 (end of Fall Week 8):** the unit tracks people, flags lingering, and logs events to a
+  laptop; the servos turn the camera on command.
+- **Milestone 3 (end of Fall Week 10):** one camera that spots, follows, and logs a person, plus a
+  basic handoff message to a neighbor that turns toward them.
+
+Winter (about 60 hours each; owners not assigned yet):
+
+- **Weeks 1–3:** move the AI, camera, and messaging code onto the custom board; switch from ESP-NOW to
+  LoRa; add video recording at the laptop.
+- **Weeks 4–6:** swarm connectivity: units pass a tracked person from camera to camera, and the fleet
+  keeps running if one unit drops offline.
+- **Weeks 7–9:** testing in real settings once approved (tracking and handoff accuracy, message
+  reliability and range); reprogram the same units for crowd monitoring.
+- **Week 10:** final demo, results, and documentation.
+
+**Plan B:** if the camera-to-camera handoff isn't working by Winter Week 6, fall back to the
+one-camera demo (spot, follow, and log) plus crowd monitoring, which reuse the same parts. This
+follows the advisor's October 12 note to have a backup plan.
+
+## Critical Assumptions and Testing
+
+Parts: camera (to order), dev board (have), ESP32s and servos (have). Test equipment comes from the
+ET lab rather than new purchases. Results so far are calculations; nothing has been tested yet.
+
+| Assumption | Testing plan | Calculation so far | Lessons and next step |
+|---|---|---|---|
+| **Critical:** the next camera can recognize the same person on its own chip fast enough not to lose them | Test a person-matching model on a laptop with a free multi-camera dataset; then two cameras with team members | ST's numbers: about 45 ms to detect and match one person on our board, well under the 1-second goal | ST has only shown this within one camera, so the handoff also uses where and when the person shows up. Order the camera and test. |
+| The STM32N6 can detect and track fast enough while the camera turns | Run ST's tracking demo with 1, 3, and 5 people; check the servos can keep up with someone walking | About 20 frames per second with 1 person and 10 with 5; about 5 is needed | Blur while turning is the bigger risk, so detection pauses while the camera moves. Measure once the camera arrives. |
+| Handoff messages reach the neighbor quickly and reliably | Send 1,000 messages between two ESP32s at demo distance; count arrivals and delay | A ~30-byte message takes about 1 ms at ESP-NOW's measured ~214 kbps | Lost messages are the risk, so each handoff is confirmed and resent. Run the test. |
 
 ## Open Questions
 
@@ -246,6 +269,8 @@ the advisor's October 12 note to have a backup plan.
 - **October 19:** narrow the scope to identical camera units that coordinate as a swarm; read up on
   swarm systems; consider more sensors; work out a coordination algorithm; favor onboard processing
   over a central computer.
+- **November 2:** asked whether the use cases, the critical assumptions, and a 1–2 week testing
+  window are reasonable. Answers go in the meeting notes.
 
 Full notes are in the [meeting notes](meeting-notes.md). Feedback on SAFE-Swarm is in the
 [legacy proposal](../legacy/EECS%20159%20-%20Project%20Proposal.pdf).
