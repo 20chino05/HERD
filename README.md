@@ -31,7 +31,7 @@ The same hardware could later be reprogrammed for other jobs, such as crowd moni
 
 ## Current Status
 
-Planning. According to the team's notes, one STM32N6 development board has been bought. The team narrowed the scope on
+Planning. According to the team's notes, two STM32N6 development boards and two cameras arrived on November 2. The team narrowed the scope on
 October 19, and the [proposal](Docs/proposal.md#estimated-deliverables-at-major-milestones)
 lays out what we think fits in the time we have.
 

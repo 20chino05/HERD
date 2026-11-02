@@ -32,6 +32,7 @@ Earlier meetings, from SAFE-Swarm, are in [legacy/meeting-notes.md](../legacy/me
 **Completed since last meeting:**
 - Proposal #2 draft: use case flowcharts, critical assumptions with calculations, and a schedule
   rebuilt around the security swarm (crowd monitoring moved to Winter as the backup).
+- Parts arrived: two dev boards and two cameras. Board work starts this week.
 
 **Questions for the advisor:**
 - Are our use cases reasonable? (Main demo: security swarm. Second: crowd monitoring.)
@@ -39,7 +40,6 @@ Earlier meetings, from SAFE-Swarm, are in [legacy/meeting-notes.md](../legacy/me
   fast enough while turning, handoff messages arriving reliably.)
 - Is it reasonable to finish the testing or calculations in 1–2 weeks?
 - Is recording video on the laptop okay, as long as tracking and handoff decisions happen on the units?
-- Hardware: a second dev board, or wait for the custom board? Camera order status.
 
 **Advisor feedback:**
 - (fill in after the meeting)
