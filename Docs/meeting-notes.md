@@ -1,6 +1,6 @@
 # Meeting Notes
 
-Advisor check-in carried over from SAFE-Swarm: Boris Vaisband, in person, Mondays at 6 PM (tentative).
+Advisor check-in carried over from SAFE-Swarm: Boris Vaisband, in person, Mondays at 6 PM (tentative; the team's Google Doc proposal says 11 AM, confirm).
 
 Add the newest meeting at the top. Copy the template comment below for each meeting.
 Earlier meetings, from SAFE-Swarm, are in [legacy/meeting-notes.md](../legacy/meeting-notes.md).
@@ -24,6 +24,30 @@ Earlier meetings, from SAFE-Swarm, are in [legacy/meeting-notes.md](../legacy/me
 |---|---|---|
 |  |  |  |
 -->
+
+## 2026-11-02 — Advisor check-in (Proposal #2)
+
+**Attendees:**
+
+**Completed since last meeting:**
+- Proposal #2 draft: use case flowcharts, critical assumptions with calculations, and a schedule
+  rebuilt around the security swarm (crowd monitoring moved to Winter as the backup).
+
+**Questions for the advisor:**
+- Are our use cases reasonable? (Main demo: security swarm. Second: crowd monitoring.)
+- Are our critical assumptions reasonable? (The next camera recognizing the same person, tracking
+  fast enough while turning, handoff messages arriving reliably.)
+- Is it reasonable to finish the testing or calculations in 1–2 weeks?
+- Is recording video on the laptop okay, as long as tracking and handoff decisions happen on the units?
+- Hardware: a second dev board, or wait for the custom board? Camera order status.
+
+**Advisor feedback:**
+- (fill in after the meeting)
+
+**Action items:**
+| Task | Owner | Due |
+|---|---|---|
+|  |  |  |
 
 ## 2026-10-19 — Advisor check-in
 
