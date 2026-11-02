@@ -1,0 +1,188 @@
+{
+  "model": "yolov8n_256_quant_pc_uf_od_coco-person",
+  "model_path": "C:\\Users\\devin\\UCI\\HERD\\ai\\models\\yolov8n_256_quant_pc_uf_od_coco-person.tflite",
+  "input_size": 256,
+  "score_thresh": 0.25,
+  "iou_thresh": 0.5,
+  "mode": "fit",
+  "timestamp": "2026-11-02T10:47:47",
+  "images": [
+    {
+      "image": "crowd_10_plus.jpg",
+      "width": 640,
+      "height": 427,
+      "detections": [
+        {
+          "box": [
+            420.8,
+            292.5,
+            468.8,
+            390.7
+          ],
+          "score": 0.76
+        },
+        {
+          "box": [
+            396.8,
+            291.4,
+            428.8,
+            370.4
+          ],
+          "score": 0.5
+        }
+      ],
+      "latency_ms": 7.93,
+      "total_ms": 8.52
+    },
+    {
+      "image": "far_small_people.jpg",
+      "width": 424,
+      "height": 640,
+      "detections": [
+        {
+          "box": [
+            326.5,
+            302.4,
+            356.1,
+            382.4
+          ],
+          "score": 0.64
+        },
+        {
+          "box": [
+            296.8,
+            307.2,
+            322.2,
+            384.0
+          ],
+          "score": 0.5
+        }
+      ],
+      "latency_ms": 7.59,
+      "total_ms": 8.17
+    },
+    {
+      "image": "five_people.jpg",
+      "width": 480,
+      "height": 640,
+      "detections": [
+        {
+          "box": [
+            66.0,
+            52.8,
+            366.0,
+            638.4
+          ],
+          "score": 0.85
+        },
+        {
+          "box": [
+            404.4,
+            148.8,
+            480.0,
+            638.4
+          ],
+          "score": 0.36
+        }
+      ],
+      "latency_ms": 7.5,
+      "total_ms": 8.12
+    },
+    {
+      "image": "no_person.jpg",
+      "width": 640,
+      "height": 427,
+      "detections": [],
+      "latency_ms": 6.12,
+      "total_ms": 6.53
+    },
+    {
+      "image": "one_person.jpg",
+      "width": 640,
+      "height": 425,
+      "detections": [
+        {
+          "box": [
+            281.6,
+            46.7,
+            499.2,
+            391.0
+          ],
+          "score": 0.915
+        }
+      ],
+      "latency_ms": 13.15,
+      "total_ms": 13.62
+    },
+    {
+      "image": "three_people.jpg",
+      "width": 640,
+      "height": 480,
+      "detections": [
+        {
+          "box": [
+            401.6,
+            145.2,
+            539.2,
+            478.8
+          ],
+          "score": 0.76
+        },
+        {
+          "box": [
+            4.8,
+            136.8,
+            315.2,
+            480.0
+          ],
+          "score": 0.64
+        }
+      ],
+      "latency_ms": 6.58,
+      "total_ms": 7.08
+    },
+    {
+      "image": "two_people.jpg",
+      "width": 500,
+      "height": 358,
+      "detections": [
+        {
+          "box": [
+            172.5,
+            135.1,
+            292.5,
+            283.7
+          ],
+          "score": 0.85
+        },
+        {
+          "box": [
+            270.0,
+            95.8,
+            425.0,
+            341.0
+          ],
+          "score": 0.85
+        },
+        {
+          "box": [
+            88.7,
+            159.3,
+            166.2,
+            238.1
+          ],
+          "score": 0.5
+        }
+      ],
+      "latency_ms": 6.12,
+      "total_ms": 6.59
+    }
+  ],
+  "summary": {
+    "n_images": 7,
+    "n_detections": 12,
+    "mean_latency_ms": 7.86,
+    "median_latency_ms": 7.5,
+    "mean_total_ms": 8.38
+  }
+}
