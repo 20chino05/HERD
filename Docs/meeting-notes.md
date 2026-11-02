@@ -42,12 +42,26 @@ Earlier meetings, from SAFE-Swarm, are in [legacy/meeting-notes.md](../legacy/me
 - Is recording video on the laptop okay, as long as tracking and handoff decisions happen on the units?
 
 **Advisor feedback:**
-- (fill in after the meeting)
+- Make sure the dev board and cameras plug in and work together.
+- Make the intelligence in each device clear: the onboard (edge) AI is what makes it a swarm, so
+  emphasize it.
+- Critical assumptions: the risk of the next camera missing the target is small. Instead:
+  - work out the handoff latency we actually need
+  - plan for two people entering a camera's view at the same time
+  - send data on the target along with the handoff
+  - try having the camera predict where a person goes after leaving its view
+- Come up with more hardware critical assumptions, including whether the wired parts can handle
+  the load.
 
 **Action items:**
 | Task | Owner | Due |
 |---|---|---|
-|  |  |  |
+| Get both dev boards running with the cameras | TBD | Week 6 |
+| Work out the handoff latency we need | Aaron | Proposal #2 |
+| Plan for two people entering a view at once | Devin | TBD |
+| Add the person's appearance data to the handoff message | Aaron | TBD |
+| Add 1–2 hardware critical assumptions (power, wired links) | Nader and Samuel | Proposal #2 |
+| Make the edge AI clearer in the proposal summary | Aaron | Proposal #2 |
 
 ## 2026-10-19 — Advisor check-in
 

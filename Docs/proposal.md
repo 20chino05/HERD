@@ -93,7 +93,10 @@ For this project, "swarm" means the units coordinate with each other directly:
 
 - Each unit knows its neighbors and which edge of its view leads to which neighbor.
 - A unit that loses a person out the side tells that neighbor, which turns and gets ready before the
-  person arrives.
+  person arrives. The handoff message carries the person's appearance data (1,280 bytes in ST's
+  example for our board), so the neighbor can pick the right person even if two walk in together.
+- The unit uses the direction and speed the person was moving when they left its view to guess
+  which neighbor to alert and when to expect them (advisor suggestion, November 2).
 - With three or more units, handoffs chain from unit to unit, and a unit that doesn't answer is
   flagged so the others carry on.
 
@@ -235,9 +238,21 @@ ET lab rather than new purchases. Results so far are calculations; nothing has b
 
 | Assumption | Testing plan | Calculation so far | Lessons and next step |
 |---|---|---|---|
-| **Critical:** the next camera can recognize the same person on its own chip fast enough not to lose them | Test a person-matching model on a laptop with a free multi-camera dataset; then two cameras with team members | ST's numbers: about 45 ms to detect and match one person on our board, well under the 1-second goal | ST has only shown this within one camera, so the handoff also uses where and when the person shows up. Test on our two cameras. |
+| **Critical:** the next camera can recognize the same person on its own chip fast enough not to lose them | Test a person-matching model on a laptop with a free multi-camera dataset; then two cameras with team members | ST's numbers: about 45 ms to detect and match one person on our board, well under the 1-second goal | ST has only shown this within one camera, so the handoff also uses where and when the person shows up. The advisor (November 2) sees this risk as small. Test on our two cameras. |
 | The STM32N6 can detect and track fast enough while the camera turns | Run ST's tracking demo with 1, 3, and 5 people; check the servos can keep up with someone walking | About 20 frames per second with 1 person and 10 with 5; about 5 is needed | Blur while turning is the bigger risk, so detection pauses while the camera moves. Measure on the board this week. |
-| Handoff messages reach the neighbor quickly and reliably | Send 1,000 messages between two ESP32s at demo distance; count arrivals and delay | A ~30-byte message takes about 1 ms at ESP-NOW's measured ~214 kbps | Lost messages are the risk, so each handoff is confirmed and resent. Run the test. |
+| Handoff messages reach the neighbor quickly and reliably | Send 1,000 messages between two ESP32s at demo distance; count arrivals and delay | A ~30-byte message takes about 1 ms at ESP-NOW's measured ~214 kbps; with the person's appearance data (1,280 bytes), about 50 ms | Lost messages are the risk, so each handoff is confirmed and resent. Run the test. |
+
+**November 2 follow-ups (draft):**
+
+- **Latency we need:** the handoff has to finish before the person reaches the next camera's view.
+  At walking speed (about 1.4 m/s), a 2 m gap between views gives about 1.4 s. A rough total of the
+  message (~50 ms with appearance data), the neighbor turning (~0.15 s for 90° at the SG90's rated
+  speed), and detection (~45 ms per frame) is well under that. To measure once both units run.
+- **Two people at once:** each person gets an ID, and the neighbor uses the appearance data plus
+  which side and when they appear to pick the right one. Test with two team members walking in together.
+- **Hardware assumptions (for Nader and Samuel to choose, disclaimer):** for example, whether one
+  power supply can run the board and both servos without the board resetting, and whether USB can
+  carry video from both units into one laptop at once.
 
 ## Open Questions
 
@@ -266,8 +281,12 @@ ET lab rather than new purchases. Results so far are calculations; nothing has b
 - **October 19:** narrow the scope to identical camera units that coordinate as a swarm; read up on
   swarm systems; consider more sensors; work out a coordination algorithm; favor onboard processing
   over a central computer.
-- **November 2:** asked whether the use cases, the critical assumptions, and a 1–2 week testing
-  window are reasonable. Answers go in the meeting notes.
+- **November 2:** make sure the dev board and cameras plug in and work together; make the onboard
+  (edge) AI and the intelligence in each unit clear, since that is what makes it a swarm. On the
+  critical assumptions: the risk of the next camera missing the target is small. Instead, work out
+  the handoff latency we actually need, plan for two people entering a view at once, send data on
+  the target with the handoff, and try predicting where a person goes after leaving a camera's view.
+  Add more hardware critical assumptions, including whether the wired parts can handle the load.
 
 Full notes are in the [meeting notes](meeting-notes.md). Feedback on SAFE-Swarm is in the
 [legacy proposal](../legacy/EECS%20159%20-%20Project%20Proposal.pdf).
