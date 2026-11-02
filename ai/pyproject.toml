@@ -1,0 +1,27 @@
+[project]
+name = "herd-ai"
+version = "0.1.0"
+description = "Open Herd laptop-side AI tooling: person detection, evaluation, and (later) tracking for the STM32N6 units."
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "ai-edge-litert>=2.0",
+  "numpy>=2.0",
+  "pillow>=10",
+  "opencv-python>=4.9",
+  "pycocotools>=2.0.8",
+  "matplotlib>=3.8",
+  "tqdm>=4.66",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["herd_ai"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
