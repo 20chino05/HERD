@@ -32,6 +32,7 @@ Earlier meetings, from SAFE-Swarm, are in [legacy/meeting-notes.md](../legacy/me
 **Completed since last meeting:**
 - Proposal #2 draft: use case flowcharts, critical assumptions with calculations, and a schedule
   rebuilt around the security swarm (crowd monitoring moved to Winter as the backup).
+- Parts arrived: two dev boards and two cameras. Board work starts this week.
 
 **Questions for the advisor:**
 - Are our use cases reasonable? (Main demo: security swarm. Second: crowd monitoring.)
@@ -39,15 +40,28 @@ Earlier meetings, from SAFE-Swarm, are in [legacy/meeting-notes.md](../legacy/me
   fast enough while turning, handoff messages arriving reliably.)
 - Is it reasonable to finish the testing or calculations in 1–2 weeks?
 - Is recording video on the laptop okay, as long as tracking and handoff decisions happen on the units?
-- Hardware: a second dev board, or wait for the custom board? Camera order status.
 
 **Advisor feedback:**
-- (fill in after the meeting)
+- Make sure the dev board and cameras plug in and work together.
+- Make the intelligence in each device clear: the onboard (edge) AI is what makes it a swarm, so
+  emphasize it.
+- Critical assumptions: the risk of the next camera missing the target is small. Instead:
+  - work out the handoff latency we actually need
+  - plan for two people entering a camera's view at the same time
+  - send data on the target along with the handoff
+  - try having the camera predict where a person goes after leaving its view
+- Come up with more hardware critical assumptions, including whether the wired parts can handle
+  the load.
 
 **Action items:**
 | Task | Owner | Due |
 |---|---|---|
-|  |  |  |
+| Get both dev boards running with the cameras | TBD | Week 6 |
+| Work out the handoff latency we need | Aaron | Proposal #2 |
+| Plan for two people entering a view at once | Devin | TBD |
+| Add the person's appearance data to the handoff message | Aaron | TBD |
+| Add 1–2 hardware critical assumptions (power, wired links) | Nader and Samuel | Proposal #2 |
+| Make the edge AI clearer in the proposal summary | Aaron | Proposal #2 |
 
 ## 2026-10-19 — Advisor check-in
 
