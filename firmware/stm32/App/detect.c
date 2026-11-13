@@ -29,11 +29,11 @@ void detect_set_camera(int32_t pan_x10, int32_t tilt_x10) {
 /*
  * The made-up scene, repeating every 45 s. Angles are where the person is,
  * in tenths of a degree, as seen from this unit (0 = straight ahead).
- *   0-3 s    nobody
- *   3-6 s    walks in from the left (-20 deg to 0)
- *   6-19 s   stands near the middle  -> should be flagged as lingering
- *   19-33 s  walks off to the right at 10 deg/s -> camera follows, then hands off
- *   33-45 s  nobody
+ * - 0 to 3 s: nobody.
+ * - 3 to 6 s: walks in from the left (-20 deg to 0).
+ * - 6 to 19 s: stands near the middle, so should be flagged as lingering.
+ * - 19 to 33 s: walks off to the right at 10 deg/s; the camera follows, then hands off.
+ * - 33 to 45 s: nobody.
  */
 static bool fake_person_angle(uint32_t t, int32_t *angle_x10) {
   if (t < 3000u) return false;

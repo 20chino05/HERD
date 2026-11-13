@@ -1,15 +1,15 @@
 /*
  * unit_fsm.h - the Use case 1 flowchart as a state machine.
  *
- *   WATCHING    nobody targeted, camera at home. Someone lingers -> TRACKING.
- *   TRACKING    follow the target. Target reaches the edge with the camera
- *               turned as far as it goes -> tell that neighbor "heading your
- *               way" -> HANDING_OFF. Target vanishes elsewhere -> LOST.
- *   HANDING_OFF wait for the neighbor's TAKEN_OVER -> WATCHING.
- *               No answer in time -> LOST -> WATCHING.
- *   EXPECTING   a neighbor said "heading your way": turn toward that side
- *               and wait. A new person appears -> TAKEN_OVER -> TRACKING.
- *               Nobody in time -> LOST -> WATCHING.
+ * - WATCHING: nobody targeted, camera at home. Someone lingers: go to TRACKING.
+ * - TRACKING: follow the target. If they reach the edge with the camera turned
+ *   as far as it goes, tell that neighbor "heading your way" and go to
+ *   HANDING_OFF. If they vanish anywhere else, they're LOST.
+ * - HANDING_OFF: wait for the neighbor's TAKEN_OVER, then go to WATCHING.
+ *   No answer in time: LOST, then WATCHING.
+ * - EXPECTING: a neighbor said "heading your way". Turn toward that side and
+ *   wait. A new person appears: send TAKEN_OVER and go to TRACKING.
+ *   Nobody in time: LOST, then WATCHING.
  */
 #ifndef UNIT_FSM_H
 #define UNIT_FSM_H

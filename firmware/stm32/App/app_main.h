@@ -2,9 +2,9 @@
  * app_main.h - the two calls main.c needs.
  *
  * In CubeMX's main.c:
- *   USER CODE BEGIN Includes   ->  #include "app_main.h"
- *   USER CODE BEGIN 2          ->  app_init();
- *   USER CODE BEGIN 3          ->  app_loop();   (inside while (1))
+ * - after USER CODE BEGIN Includes, add: #include "app_main.h"
+ * - after USER CODE BEGIN 2, add: app_init();
+ * - after USER CODE BEGIN 3 (inside while (1)), add: app_loop();
  */
 #ifndef APP_MAIN_H
 #define APP_MAIN_H

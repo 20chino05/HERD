@@ -2,11 +2,11 @@
  * board_stm32.c - board.h for the NUCLEO-N657X0-Q, using ST's HAL.
  *
  * Uses what CubeMX generates in main.c (see Docs/software/stm32-skeleton-setup.md):
- *   huart1  USART1, PE5/PE6, the ST-LINK USB virtual COM port   -> debug log
- *   huart3  USART3, PD8 (TX, Arduino D1) / PD9 (RX, Arduino D0) -> ESP32
- *           (its "global interrupt" must be enabled in CubeMX)
- *   htim1   TIM1 CH1 on PE9 (Arduino D3) -> pan servo
- *           TIM1 CH2 on PE11 (Arduino D7) -> tilt servo
+ * - huart1: USART1 on PE5/PE6, the ST-LINK USB virtual COM port. Used for the debug log.
+ * - huart3: USART3, PD8 = TX (Arduino D1), PD9 = RX (Arduino D0). Used for the ESP32.
+ *   Its "global interrupt" must be enabled in CubeMX.
+ * - htim1: TIM1 CH1 on PE9 (Arduino D3) for the pan servo,
+ *   and TIM1 CH2 on PE11 (Arduino D7) for the tilt servo.
  * The green user LED (PG0) is set up here, so CubeMX doesn't need to.
  *
  * If CubeMX named anything differently, only the #defines below need changing.

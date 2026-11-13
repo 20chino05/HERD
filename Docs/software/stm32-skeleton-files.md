@@ -9,9 +9,9 @@ Backup for when you can't use the zip. Make each file in CubeIDE (right-click th
  * app_main.h - the two calls main.c needs.
  *
  * In CubeMX's main.c:
- *   USER CODE BEGIN Includes   ->  #include "app_main.h"
- *   USER CODE BEGIN 2          ->  app_init();
- *   USER CODE BEGIN 3          ->  app_loop();   (inside while (1))
+ * - after USER CODE BEGIN Includes, add: #include "app_main.h"
+ * - after USER CODE BEGIN 2, add: app_init();
+ * - after USER CODE BEGIN 3 (inside while (1)), add: app_loop();
  */
 #ifndef APP_MAIN_H
 #define APP_MAIN_H
@@ -66,7 +66,8 @@ static void send_status(uint32_t now) {
   link_send(&m, now);
 
   const link_stats_t *s = link_stats();
-  log_printf("status: %s target=%u people=%u pan=%ld tilt=%ld | link sent=%lu resent=%lu failed=%lu recv=%lu bad=%lu echo=%lu",
+  log_printf("status: %s target=%u people=%u pan=%ld tilt=%ld"
+             " | link sent=%lu resent=%lu failed=%lu recv=%lu bad=%lu echo=%lu",
              fsm_state_name(fsm_state()), (unsigned)fsm_target(), (unsigned)tracker_count(),
              (long)(pantilt_pan_x10() / 10), (long)(pantilt_tilt_x10() / 10), (unsigned long)s->sent,
              (unsigned long)s->resent, (unsigned long)s->failed, (unsigned long)s->received,
@@ -228,11 +229,11 @@ void board_servo_write_us(uint8_t servo, uint16_t pulse_us);
  * board_stm32.c - board.h for the NUCLEO-N657X0-Q, using ST's HAL.
  *
  * Uses what CubeMX generates in main.c (see Docs/software/stm32-skeleton-setup.md):
- *   huart1  USART1, PE5/PE6, the ST-LINK USB virtual COM port   -> debug log
- *   huart3  USART3, PD8 (TX, Arduino D1) / PD9 (RX, Arduino D0) -> ESP32
- *           (its "global interrupt" must be enabled in CubeMX)
- *   htim1   TIM1 CH1 on PE9 (Arduino D3) -> pan servo
- *           TIM1 CH2 on PE11 (Arduino D7) -> tilt servo
+ * - huart1: USART1 on PE5/PE6, the ST-LINK USB virtual COM port. Used for the debug log.
+ * - huart3: USART3, PD8 = TX (Arduino D1), PD9 = RX (Arduino D0). Used for the ESP32.
+ *   Its "global interrupt" must be enabled in CubeMX.
+ * - htim1: TIM1 CH1 on PE9 (Arduino D3) for the pan servo,
+ *   and TIM1 CH2 on PE11 (Arduino D7) for the tilt servo.
  * The green user LED (PG0) is set up here, so CubeMX doesn't need to.
  *
  * If CubeMX named anything differently, only the #defines below need changing.
@@ -877,11 +878,11 @@ void detect_set_camera(int32_t pan_x10, int32_t tilt_x10) {
 /*
  * The made-up scene, repeating every 45 s. Angles are where the person is,
  * in tenths of a degree, as seen from this unit (0 = straight ahead).
- *   0-3 s    nobody
- *   3-6 s    walks in from the left (-20 deg to 0)
- *   6-19 s   stands near the middle  -> should be flagged as lingering
- *   19-33 s  walks off to the right at 10 deg/s -> camera follows, then hands off
- *   33-45 s  nobody
+ * - 0 to 3 s: nobody.
+ * - 3 to 6 s: walks in from the left (-20 deg to 0).
+ * - 6 to 19 s: stands near the middle, so should be flagged as lingering.
+ * - 19 to 33 s: walks off to the right at 10 deg/s; the camera follows, then hands off.
+ * - 33 to 45 s: nobody.
  */
 static bool fake_person_angle(uint32_t t, int32_t *angle_x10) {
   if (t < 3000u) return false;
@@ -1525,15 +1526,15 @@ const link_stats_t *link_stats(void) { return &stats; }
 /*
  * unit_fsm.h - the Use case 1 flowchart as a state machine.
  *
- *   WATCHING    nobody targeted, camera at home. Someone lingers -> TRACKING.
- *   TRACKING    follow the target. Target reaches the edge with the camera
- *               turned as far as it goes -> tell that neighbor "heading your
- *               way" -> HANDING_OFF. Target vanishes elsewhere -> LOST.
- *   HANDING_OFF wait for the neighbor's TAKEN_OVER -> WATCHING.
- *               No answer in time -> LOST -> WATCHING.
- *   EXPECTING   a neighbor said "heading your way": turn toward that side
- *               and wait. A new person appears -> TAKEN_OVER -> TRACKING.
- *               Nobody in time -> LOST -> WATCHING.
+ * - WATCHING: nobody targeted, camera at home. Someone lingers: go to TRACKING.
+ * - TRACKING: follow the target. If they reach the edge with the camera turned
+ *   as far as it goes, tell that neighbor "heading your way" and go to
+ *   HANDING_OFF. If they vanish anywhere else, they're LOST.
+ * - HANDING_OFF: wait for the neighbor's TAKEN_OVER, then go to WATCHING.
+ *   No answer in time: LOST, then WATCHING.
+ * - EXPECTING: a neighbor said "heading your way". Turn toward that side and
+ *   wait. A new person appears: send TAKEN_OVER and go to TRACKING.
+ *   Nobody in time: LOST, then WATCHING.
  */
 #ifndef UNIT_FSM_H
 #define UNIT_FSM_H

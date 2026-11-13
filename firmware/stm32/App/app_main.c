@@ -39,7 +39,8 @@ static void send_status(uint32_t now) {
   link_send(&m, now);
 
   const link_stats_t *s = link_stats();
-  log_printf("status: %s target=%u people=%u pan=%ld tilt=%ld | link sent=%lu resent=%lu failed=%lu recv=%lu bad=%lu echo=%lu",
+  log_printf("status: %s target=%u people=%u pan=%ld tilt=%ld"
+             " | link sent=%lu resent=%lu failed=%lu recv=%lu bad=%lu echo=%lu",
              fsm_state_name(fsm_state()), (unsigned)fsm_target(), (unsigned)tracker_count(),
              (long)(pantilt_pan_x10() / 10), (long)(pantilt_tilt_x10() / 10), (unsigned long)s->sent,
              (unsigned long)s->resent, (unsigned long)s->failed, (unsigned long)s->received,
