@@ -25,7 +25,8 @@ typedef struct {
   uint32_t resent;
   uint32_t failed;     /* gave up waiting for an ACK */
   uint32_t received;   /* good messages delivered */
-  uint32_t bad_frames; /* thrown away: corrupted, wrong format, or not for us */
+  uint32_t bad_frames; /* thrown away: corrupted or wrong format */
+  uint32_t echoes;     /* our own messages heard back (e.g. a test wire from D1 to D0) */
 } link_stats_t;
 
 void link_init(uint8_t my_id, link_message_fn on_message, link_failed_fn on_failed);

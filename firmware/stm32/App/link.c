@@ -107,7 +107,10 @@ static bool already_seen(uint8_t src, uint16_t seq) {
 }
 
 static void handle_message(const herd_msg_t *m, uint32_t now_ms) {
-  if (m->src == my_id) return; /* our own message echoed back */
+  if (m->src == my_id) { /* our own message heard back */
+    stats.echoes++;
+    return;
+  }
   if (m->dst != my_id && m->dst != HERD_ID_BROADCAST) return; /* for someone else */
 
   if (m->type == HERD_MSG_ACK) {

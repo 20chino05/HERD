@@ -330,6 +330,14 @@ static void test_expecting_timeout(void) {
   link_poll(6000);
   CHECK(fsm_state() == UNIT_WATCHING);
 
+  /* Our own message heard back (test wire D1 -> D0) is counted, not acted on. */
+  herd_msg_t own = make_msg(HERD_MSG_HEADING, UNIT_ID, UNIT_ID, 5);
+  fake_inject(&own);
+  uint32_t echoes = link_stats()->echoes;
+  link_poll(6000);
+  CHECK(link_stats()->echoes == echoes + 1);
+  CHECK(fsm_state() == UNIT_WATCHING);
+
   /* Garbage on the wire is counted, not crashed on. */
   const uint8_t junk[] = {0xA5, 0x5A, 0x03, 0x01, 0x02, 0x03, 0x00, 0x00};
   fake_inject_bytes(junk, sizeof(junk));
