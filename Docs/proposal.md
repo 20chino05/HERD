@@ -93,7 +93,10 @@ For this project, "swarm" means the units coordinate with each other directly:
 
 - Each unit knows its neighbors and which edge of its view leads to which neighbor.
 - A unit that loses a person out the side tells that neighbor, which turns and gets ready before the
-  person arrives.
+  person arrives. The handoff message carries the person's appearance data (1,280 bytes in ST's
+  example for our board), so the neighbor can pick the right person even if two walk in together.
+- The unit uses the direction and speed the person was moving when they left its view to guess
+  which neighbor to alert and when to expect them (advisor suggestion, November 2).
 - With three or more units, handoffs chain from unit to unit, and a unit that doesn't answer is
   flagged so the others carry on.
 
@@ -118,8 +121,8 @@ The units decide what to do. The central station only records.
 Template instructions: break milestones into weekly tasks, and assign each task to one
 responsible member (split shared tasks into sub-tasks).
 
-**Phase 1: dev board prototype (V0).** Use the STM32N6 development board the team reports buying
-(NUCLEO-N657X0-Q, to be confirmed), plus a camera to be bought with school funding. The hardware plan uses ESP32 boards the
+**Phase 1: dev board prototype (V0).** Use the two STM32N6 development boards and two cameras that arrived
+on November 2 (exact models to confirm). The hardware plan uses ESP32 boards the
 team already has for messages between units.
 
 **Phase 2: custom board (V1).** Design the team's own PCB around the STM32N6. The goal is a board
@@ -149,10 +152,8 @@ These come from the October 19 use case. The hardware team decides all of them.
   board moves, so its ribbon cable would flex with every move. The hardware team decides the mounting.
 - **Servo power.** Servos are usually powered from their own 5 V supply (about $8) that shares a
   ground with the board, rather than from the board itself.
-- **Every unit needs its own board and camera.** Only one board is reported bought, and it most
-  likely shipped without a camera. A two-unit handoff needs a second board (~$75) and two cameras;
-  a chain needs three of each. A color camera probably suits appearance matching better than the
-  black-and-white option.
+- **Every unit needs its own board and camera.** Two boards and two cameras arrived on November 2,
+  enough for a two-unit handoff; a chain needs a third of each.
 - **Video to the central station.** Short messages between units fit on ESP-NOW, but video
   doesn't. The simplest V0 option is the USB webcam output from ST's example app (320x240) into a
   laptop, which keeps units within about 5 m of it. Whether two units can stream into one laptop at
@@ -171,7 +172,7 @@ These come from the October 19 use case. The hardware team decides all of them.
 
 ## Rough Parts List
 
-See the [draft parts list](parts-list.md). In short: one STM32N6 board is reported bought. Each unit
+See the [draft parts list](parts-list.md). In short: two STM32N6 boards and two cameras have arrived. Each unit
 needs its own board and camera. If the hardware team goes with this use case, each unit would also
 need a pan/tilt mount with servos and a servo supply, plus an ESP32 for messages (some are on hand).
 The central station can be a team laptop.
@@ -182,7 +183,7 @@ The central station can be a team laptop.
 per person per week, software has an estimated 148 hands-on hours across Fall and Winter after
 meetings and write-ups. The must-have work below is estimated at about 135–145 hours, including extra
 time for learning. It only fits if we build on ST's existing example for our board, freeze the
-must-have list, and have cameras by about Fall Week 6 and a pan/tilt mount by mid-November (Fall Week 8).
+must-have list, and have cameras by about Fall Week 6 (they arrived November 2) and a pan/tilt mount by mid-November (Fall Week 8).
 
 **Scope tiers**
 
@@ -204,11 +205,11 @@ each in Fall. Weeks 4–5 have already passed.
 |---|---|---|
 | 4 (Oct 19–23) | Install ST's AI tools and run its person-detection model on a laptop | Set up the STM32N6 tools, run a test program on the dev board, draft the first messages between units |
 | 5 (Oct 26–30) | Accuracy check on a free dataset at the board's image size | Two ESP32s talking over ESP-NOW; confirm a handoff message fits in one message |
-| 6 (Nov 2–6) | Test ST's person-matching model on a laptop with a free multi-camera dataset; camera and detection on the board once it arrives | Connect an ESP32 to the dev board and send a test message from the board |
+| 6 (Nov 2–6) | Test ST's person-matching model on a laptop with a free multi-camera dataset; camera and detection on the board | Connect an ESP32 to the dev board and send a test message from the board |
 | 7 (Nov 9–13) | Run ST's tracking demo on the board; frames per second with 1, 3, and 5 people | Laptop base station that logs events with the time |
 | 8 (Nov 16–20) | Flag someone lingering in one area (team members only until IRB) | Servo control from the dev board (pan/tilt mount from the hardware team) |
 | 9 (Nov 23–27) | First pass at following the person with the servos | Send "heading your way" when the person reaches the edge of the turn range |
-| 10 (Nov 30–Dec 4) | One-camera demo: spot lingering, follow, and log; AI write-up | Handoff demo with a stand-in neighbor (an ESP32 with a servo); messaging write-up |
+| 10 (Nov 30–Dec 4) | One-camera demo: spot lingering, follow, and log; AI write-up | Handoff demo: the second unit gets "heading your way" and turns toward that side; messaging write-up |
 
 - **Milestone 1 (end of Fall Week 6):** person detection on the dev board; ESP32s sending messages over ESP-NOW.
 - **Milestone 2 (end of Fall Week 8):** the unit tracks people, flags lingering, and logs events to a
@@ -232,14 +233,26 @@ follows the advisor's October 12 note to have a backup plan.
 
 ## Critical Assumptions and Testing
 
-Parts: camera (to order), dev board (have), ESP32s and servos (have). Test equipment comes from the
+Parts: two dev boards and two cameras (arrived November 2), plus ESP32s and servos (on hand). Test equipment comes from the
 ET lab rather than new purchases. Results so far are calculations; nothing has been tested yet.
 
 | Assumption | Testing plan | Calculation so far | Lessons and next step |
 |---|---|---|---|
-| **Critical:** the next camera can recognize the same person on its own chip fast enough not to lose them | Test a person-matching model on a laptop with a free multi-camera dataset; then two cameras with team members | ST's numbers: about 45 ms to detect and match one person on our board, well under the 1-second goal | ST has only shown this within one camera, so the handoff also uses where and when the person shows up. Order the camera and test. |
-| The STM32N6 can detect and track fast enough while the camera turns | Run ST's tracking demo with 1, 3, and 5 people; check the servos can keep up with someone walking | About 20 frames per second with 1 person and 10 with 5; about 5 is needed | Blur while turning is the bigger risk, so detection pauses while the camera moves. Measure once the camera arrives. |
-| Handoff messages reach the neighbor quickly and reliably | Send 1,000 messages between two ESP32s at demo distance; count arrivals and delay | A ~30-byte message takes about 1 ms at ESP-NOW's measured ~214 kbps | Lost messages are the risk, so each handoff is confirmed and resent. Run the test. |
+| **Critical:** the next camera can recognize the same person on its own chip fast enough not to lose them | Test a person-matching model on a laptop with a free multi-camera dataset; then two cameras with team members | ST's numbers: about 45 ms to detect and match one person on our board, well under the 1-second goal | ST has only shown this within one camera, so the handoff also uses where and when the person shows up. The advisor (November 2) sees this risk as small. Test on our two cameras. |
+| The STM32N6 can detect and track fast enough while the camera turns | Run ST's tracking demo with 1, 3, and 5 people; check the servos can keep up with someone walking | About 20 frames per second with 1 person and 10 with 5; about 5 is needed | Blur while turning is the bigger risk, so detection pauses while the camera moves. Measure on the board this week. |
+| Handoff messages reach the neighbor quickly and reliably | Send 1,000 messages between two ESP32s at demo distance; count arrivals and delay | A ~30-byte message takes about 1 ms at ESP-NOW's measured ~214 kbps; with the person's appearance data (1,280 bytes), about 50 ms | Lost messages are the risk, so each handoff is confirmed and resent. Run the test. |
+
+**November 2 follow-ups (draft):**
+
+- **Latency we need:** the handoff has to finish before the person reaches the next camera's view.
+  At walking speed (about 1.4 m/s), a 2 m gap between views gives about 1.4 s. A rough total of the
+  message (~50 ms with appearance data), the neighbor turning (~0.15 s for 90° at the SG90's rated
+  speed), and detection (~45 ms per frame) is well under that. To measure once both units run.
+- **Two people at once:** each person gets an ID, and the neighbor uses the appearance data plus
+  which side and when they appear to pick the right one. Test with two team members walking in together.
+- **Hardware assumptions (for Nader and Samuel to choose, disclaimer):** for example, whether one
+  power supply can run the board and both servos without the board resetting, and whether USB can
+  carry video from both units into one laptop at once.
 
 ## Open Questions
 
@@ -252,8 +265,7 @@ ET lab rather than new purchases. Results so far are calculations; nothing has b
 - **Appearance matching:** Can a unit reliably recognize the same person seen by a different
   camera? ST has only shown this within one camera, so we'd need to measure it ourselves.
 - **Video link:** USB to a laptop for V0, or Ethernet or Wi-Fi? (Hardware decision.)
-- **Units:** How many units can the budget cover: two for a handoff, or three for a chain?
-- **Cameras:** Stock varies by store, and one listed a very long lead time. Order early from a store that shows real stock.
+- **Units:** Two are covered. Is a third needed for a chain?
 - **Location:** Do units need GPS, or is each unit's position and neighbor list set at install?
 - **IRB and recording rules:** Testing on people likely needs a ZOT IRB self-determination (with the
   advisor) first. No microphones: California requires all-party consent to record confidential
@@ -269,8 +281,12 @@ ET lab rather than new purchases. Results so far are calculations; nothing has b
 - **October 19:** narrow the scope to identical camera units that coordinate as a swarm; read up on
   swarm systems; consider more sensors; work out a coordination algorithm; favor onboard processing
   over a central computer.
-- **November 2:** asked whether the use cases, the critical assumptions, and a 1–2 week testing
-  window are reasonable. Answers go in the meeting notes.
+- **November 2:** make sure the dev board and cameras plug in and work together; make the onboard
+  (edge) AI and the intelligence in each unit clear, since that is what makes it a swarm. On the
+  critical assumptions: the risk of the next camera missing the target is small. Instead, work out
+  the handoff latency we actually need, plan for two people entering a view at once, send data on
+  the target with the handoff, and try predicting where a person goes after leaving a camera's view.
+  Add more hardware critical assumptions, including whether the wired parts can handle the load.
 
 Full notes are in the [meeting notes](meeting-notes.md). Feedback on SAFE-Swarm is in the
 [legacy proposal](../legacy/EECS%20159%20-%20Project%20Proposal.pdf).

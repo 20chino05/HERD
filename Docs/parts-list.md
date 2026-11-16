@@ -7,6 +7,8 @@
 >
 > **Updated October 19, 2026** for the security camera swarm demo. Parts marked **(disclaimer)**
 > come from the new use case. The hardware team (Nader and Samuel) decides whether and how to use them.
+>
+> **Updated November 2, 2026:** two dev boards and two cameras have arrived (per Samuel).
 
 **Status values:** **Bought** · **On hand** · **To buy** (need is clear, part not chosen) · **To research** · **Maybe**
 
@@ -16,11 +18,11 @@
 
 | Part | What it's for | Status | Options found so far | Price seen | Notes |
 |---|---|---|---|---|---|
-| STM32N6 dev board (NUCLEO-N657X0-Q) | Runs the AI | Bought (per the voice memo) | — | ~$75 (ST store) | Confirm the exact board and how many were bought. |
-| Camera module | Captures video | To buy, with school funding | ST-supported cameras that plug into the board: B-CAMS-IMX (5 MP color), STEVAL-66GYMAI1 (1.5 MP color), STEVAL-55G1MBI1 (0.56 MP black-and-white) | ~$57–84 depending on module and store | Every unit needs one. A color camera likely suits appearance matching better. See "Camera" below. |
+| STM32N6 dev board (NUCLEO-N657X0-Q) | Runs the AI | Bought: 2 arrived (Nov 2) | — | ~$75 (ST store) | Confirm the exact board model. |
+| Camera module | Captures video | Bought: 2 arrived (Nov 2) | ST-supported cameras that plug into the board: B-CAMS-IMX (5 MP color), STEVAL-66GYMAI1 (1.5 MP color), STEVAL-55G1MBI1 (0.56 MP black-and-white) | ~$57–84 depending on module and store | Every unit needs one. Confirm which model arrived. See "Camera" below. |
 | LoRa radio module | Short alerts; the V1 radio in the hardware plan (role depends on the hardware team's call) | Maybe (disclaimer) | RAK3172 or Seeed Wio-E5 (simple text commands over a serial port); SX1262 modules as a backup | ~$7–10 | With ESP-NOW handling messages, LoRa may not be needed. Needs a 915 MHz antenna too. |
 | ESP32 board | Sends handoff messages between units over ESP-NOW | On hand (per the hardware plan) | The ESP32s the team already has; more if needed (e.g. Seeed XIAO ESP32C3) | On hand; ~$5 if more are needed | One per unit. Confirm how many the team has. See "Messages between units" below. |
-| Pan/tilt mount with two micro servos | Turns the camera to follow a person | To research (disclaimer) | SparkFun ROB-14391 kit; Adafruit Mini Pan-Tilt Kit 1967 (comes with two micro servos) | ~$11.50–19 (online snapshots) | Only the camera board would move, so its ribbon cable flexes. See "Pan/tilt" below. |
+| Pan/tilt mount with two micro servos | Turns the camera to follow a person | Servos on hand (per Nader); mount to research (disclaimer) | SparkFun ROB-14391 kit; Adafruit Mini Pan-Tilt Kit 1967 (comes with two micro servos) | ~$11.50–19 (online snapshots) | Only the camera board would move, so its ribbon cable flexes. See "Pan/tilt" below. |
 | Servo power supply | Powers the servos separately from the board | To research (disclaimer) | A 5 V, 2 A or larger supply sharing a ground with the board | ~$8 | Servos can draw large spikes of current. See "Pan/tilt" below. |
 | Video link to the central station | Gets each unit's video to the recording laptop | To research (disclaimer) | V0: a USB cable to a laptop, using ST's built-in USB webcam output. Later: the Nucleo's Ethernet port, or Wi-Fi | Cables; ~$20–40 for a small switch or router if Ethernet | See "Video to the central station" below. |
 | Power | Runs the device | To research | USB-C wall power for the first prototype; battery + charger only if off-grid | Charger board seen at ~$20 | See "Power" below. |
@@ -31,10 +33,10 @@ laptop ($0).
 
 **Rough Phase 1 cost per unit:** about $160–190 with a color camera, for the board, camera, pan/tilt
 kit, servo supply, and ESP32, before power parts, cables, the case, tax, and shipping. Camera prices
-are snapshots, and one may not be in US dollars. Keeping LoRa adds about $7–10 plus an antenna. One
-board is already bought. The advisor's October 12 note was to watch costs closely.
+are snapshots, and one may not be in US dollars. Keeping LoRa adds about $7–10 plus an antenna. Two
+boards and two cameras have arrived. The advisor's October 12 note was to watch costs closely.
 
-**How many units?** Not decided. A handoff needs at least two complete units, and a chain needs three.
+**How many units?** Two boards and two cameras are here, enough for a two-unit handoff. A chain needs a third.
 
 ## Notes on each part
 
