@@ -68,6 +68,19 @@ cd ..\..
 The frame counts of these videos match the labels (checked: 795 / 179 / 71 / 525). ADL-Rundle-6 is served
 at half resolution; the scripts scale the ground truth from `seqinfo.ini` automatically.
 
+## Demo: everything on one page, with the pipeline running live
+
+```powershell
+python scripts/demo_server.py          # builds the page from results/, opens http://127.0.0.1:8765/
+```
+
+One page for check-ins: the week 4 photos, the week 5 table and curves, the week 6 numbers with a
+"query and its five nearest crops" strip from Market-1501, the week 7 tables and settings, and at the top
+a live view that runs the real detector + tracker on the MOT15 clips or the laptop webcam and streams
+the result to the browser (MJPEG, one stream at a time). The first start embeds 2,000 Market-1501 crops
+for the re-ID strip (about 20 s, cached under `outputs/demo/`); `--no-reid` skips it. Needs the model
+files and, for the clips and the re-ID strip, the downloads above; missing pieces are left out of the page.
+
 ## Week 4: run the detector
 
 ```powershell

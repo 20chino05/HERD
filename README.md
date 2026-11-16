@@ -79,5 +79,5 @@ Faculty Advisor: Boris Vaisband
 - [Meeting notes](Docs/meeting-notes.md): including the October 12 and 19 advisor feedback
 - [AI, Fall weeks 4–5](Docs/software/2026-11-02-ai-weeks-4-5.md): decisions, findings and measured results from running ST's person detector on a laptop
 - [AI, Fall weeks 6–7](Docs/software/2026-11-15-ai-weeks-6-7.md): ST's person re-identification model and the firmware's tracker measured on public datasets; settings for app_config.h
-- [AI setup and usage](ai/README.md): how to install and run the detector and the accuracy check
+- [AI setup and usage](ai/README.md): how to install and run the detector, the accuracy checks, and the local demo page (`python ai/scripts/demo_server.py`) that shows weeks 4 to 7 with the pipeline running live
 - [Legacy: SAFE-Swarm](legacy/README.md): the original drone project, archived October 16, 2026
