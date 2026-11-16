@@ -1,0 +1,89 @@
+{
+  "ap50": 0.6674,
+  "n_images": 5000,
+  "n_gt_boxes": 10777,
+  "n_detections_scored": 106132,
+  "at_threshold": {
+    "0.1": {
+      "precision": 0.7023,
+      "recall": 0.6241,
+      "f1": 0.6609
+    },
+    "0.2": {
+      "precision": 0.8108,
+      "recall": 0.5635,
+      "f1": 0.6649
+    },
+    "0.25": {
+      "precision": 0.8827,
+      "recall": 0.4931,
+      "f1": 0.6327
+    },
+    "0.3": {
+      "precision": 0.8827,
+      "recall": 0.4931,
+      "f1": 0.6327
+    },
+    "0.4": {
+      "precision": 0.9334,
+      "recall": 0.4148,
+      "f1": 0.5743
+    },
+    "0.5": {
+      "precision": 0.9334,
+      "recall": 0.4148,
+      "f1": 0.5743
+    },
+    "0.6": {
+      "precision": 0.9645,
+      "recall": 0.3172,
+      "f1": 0.4774
+    },
+    "0.7": {
+      "precision": 0.9829,
+      "recall": 0.2293,
+      "f1": 0.3718
+    },
+    "0.8": {
+      "precision": 0.9925,
+      "recall": 0.1359,
+      "f1": 0.2391
+    },
+    "0.9": {
+      "precision": 0.9961,
+      "recall": 0.0477,
+      "f1": 0.091
+    }
+  },
+  "best_f1_threshold": 0.2,
+  "latency_ms": {
+    "mean": 26.8,
+    "median": 22.25,
+    "p95": 48.07,
+    "min": 15.66,
+    "max": 85.49
+  },
+  "end_to_end_ms_mean": 28.63,
+  "pycocotools_ap50": 0.66,
+  "model": "yolov8n_416_quant_pc_uf_od_coco-person",
+  "model_path": "models\\yolov8n_416_quant_pc_uf_od_coco-person.tflite",
+  "input_size": 416,
+  "st_ap50_percent": 64.79,
+  "st_n6_ms": 54.67,
+  "config": {
+    "iou": 0.5,
+    "nms": 0.5,
+    "score_thresh": 0.001,
+    "max_det": 100,
+    "mode": "fit",
+    "seed": 0,
+    "n_with_person": null,
+    "n_without": null
+  },
+  "environment": {
+    "machine": "DJMachine",
+    "cpu": "Intel64 Family 6 Model 181 Stepping 0, GenuineIntel",
+    "python": "3.12.10",
+    "timestamp": "2026-11-02T10:41:07"
+  }
+}

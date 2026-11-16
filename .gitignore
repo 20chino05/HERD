@@ -14,3 +14,17 @@ __pycache__/
 .venv/
 venv/
 .ipynb_checkpoints/
+*.egg-info/
+.pytest_cache/
+
+# Large or downloaded AI inputs and outputs (re-create with ai/scripts/download_models.py
+# and the COCO download commands in ai/README.md)
+ai/data/
+ai/models/*.tflite
+ai/models/*.onnx
+ai/outputs/
+
+# STM32CubeIDE build output (firmware/)
+firmware/**/Debug/
+firmware/**/Release/
+firmware/**/.settings/
