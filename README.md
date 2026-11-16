@@ -36,9 +36,11 @@ Planning. According to the team's notes, two STM32N6 development boards and two 
 October 19, and the [proposal](Docs/proposal.md#estimated-deliverables-at-major-milestones)
 lays out what we think fits in the time we have.
 
-Done on the software side (Fall weeks 4 and 5): ST's ready-made person detector runs on a laptop,
-and its accuracy and speed are measured on COCO at the image sizes the board will use. See the
-[AI write-up](Docs/software/2026-11-02-ai-weeks-4-5.md) and [`ai/README.md`](ai/README.md).
+Done on the software side (Fall weeks 4 to 7, laptop): ST's ready-made person detector runs and is
+measured on COCO at the board's image sizes; ST's person re-identification model is measured on a
+6-camera dataset; the firmware's tracker is scored on public pedestrian video. See the write-ups for
+[weeks 4–5](Docs/software/2026-11-02-ai-weeks-4-5.md) and [weeks 6–7](Docs/software/2026-11-15-ai-weeks-6-7.md)
+and [`ai/README.md`](ai/README.md).
 
 ## Repository layout
 
@@ -76,5 +78,6 @@ Faculty Advisor: Boris Vaisband
 - [Draft parts list](Docs/parts-list.md): what's bought, what's needed, and options to research
 - [Meeting notes](Docs/meeting-notes.md): including the October 12 and 19 advisor feedback
 - [AI, Fall weeks 4–5](Docs/software/2026-11-02-ai-weeks-4-5.md): decisions, findings and measured results from running ST's person detector on a laptop
+- [AI, Fall weeks 6–7](Docs/software/2026-11-15-ai-weeks-6-7.md): ST's person re-identification model and the firmware's tracker measured on public datasets; settings for app_config.h
 - [AI setup and usage](ai/README.md): how to install and run the detector and the accuracy check
 - [Legacy: SAFE-Swarm](legacy/README.md): the original drone project, archived October 16, 2026

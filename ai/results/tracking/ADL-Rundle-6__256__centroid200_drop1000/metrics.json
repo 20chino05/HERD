@@ -1,0 +1,118 @@
+{
+  "video": "data\\mot15\\ADL-Rundle-6-raw.mp4",
+  "frames": 525,
+  "fps_source": 30.0,
+  "resolution": [
+    960,
+    540
+  ],
+  "timing_ms": {
+    "invoke": {
+      "mean": 24.844257906301035,
+      "median": 25.334600009955466,
+      "p95": 41.75867998274043
+    },
+    "detect_total": {
+      "mean": 26.316154095942952,
+      "median": 26.817700010724366,
+      "p95": 43.71994000393897
+    },
+    "tracker": {
+      "mean": 0.21111504673691733,
+      "median": 0.19789999350905418,
+      "p95": 0.37273998605087394
+    },
+    "per_frame": {
+      "mean": 26.52726914267987,
+      "median": 27.119999984279275,
+      "p95": 44.0881400136277
+    }
+  },
+  "timing_by_people_in_frame": {
+    "3-4": {
+      "n_frames": 14,
+      "ms_per_frame_median": 8.137049997458234,
+      "fps_laptop": 122.89466087984827
+    },
+    "5+": {
+      "n_frames": 511,
+      "ms_per_frame_median": 27.68229995854199,
+      "fps_laptop": 36.12416603741871
+    }
+  },
+  "people_per_frame_max": 13,
+  "tracking": {
+    "n_frames": 525,
+    "n_gt": 5009,
+    "tp": 2361,
+    "fp": 282,
+    "fn": 2648,
+    "idsw": 106,
+    "mota": 0.39389099620682766,
+    "recall": 0.47135156717907767,
+    "precision": 0.8933030646992054,
+    "n_gt_tracks": 24,
+    "mostly_tracked": 4,
+    "mostly_lost": 5
+  },
+  "tracking_by_crowd": {
+    "3-4": {
+      "n_frames": 14,
+      "n_gt": 56,
+      "tp": 23,
+      "fp": 16,
+      "fn": 33,
+      "idsw": 0,
+      "mota": 0.125,
+      "recall": 0.4107142857142857,
+      "precision": 0.5897435897435898
+    },
+    "5+": {
+      "n_frames": 511,
+      "n_gt": 4953,
+      "tp": 2338,
+      "fp": 266,
+      "fn": 2615,
+      "idsw": 106,
+      "mota": 0.3969311528366647,
+      "recall": 0.47203714920250356,
+      "precision": 0.8978494623655914
+    }
+  },
+  "detection_only": {
+    "n_gt": 5009,
+    "tp": 2422,
+    "fp": 315,
+    "fn": 2587,
+    "recall": 0.4835296466360551,
+    "precision": 0.8849104859335039
+  },
+  "gt": {
+    "folder": "data\\mot15\\MOT15Labels\\train\\ADL-Rundle-6",
+    "seqinfo": {
+      "name": "ADL-Rundle-6",
+      "frame_rate": 30.0,
+      "seq_length": 525,
+      "width": 1920,
+      "height": 1080
+    },
+    "scale_applied": 0.5
+  },
+  "name": "ADL-Rundle-6__256__centroid200_drop1000",
+  "model": "yolov8n_256_quant_pc_uf_od_coco-person",
+  "input_size": 256,
+  "tracker": {
+    "match": "centroid",
+    "match_dist": 200,
+    "min_iou": 0.3,
+    "drop_ms": 1000,
+    "max_tracks": 8,
+    "predict": false
+  },
+  "score_thresh": 0.25,
+  "environment": {
+    "python": "3.12.10",
+    "machine": "AMD64",
+    "timestamp": "2026-11-15T22:03:16"
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "video": "data\\mot15\\TUD-Campus-raw.mp4",
+  "frames": 71,
+  "fps_source": 25.0,
+  "resolution": [
+    640,
+    480
+  ],
+  "timing_ms": {
+    "invoke": {
+      "mean": 9.681297184958478,
+      "median": 8.351399970706552,
+      "p95": 15.744000033009797
+    },
+    "detect_total": {
+      "mean": 10.434808451387191,
+      "median": 9.013900009449571,
+      "p95": 16.5710499859415
+    },
+    "tracker": {
+      "mean": 0.09547606189276131,
+      "median": 0.08779997006058693,
+      "p95": 0.14074999489821494
+    },
+    "per_frame": {
+      "mean": 10.530284513279954,
+      "median": 9.094999986700714,
+      "p95": 16.687650000676513
+    }
+  },
+  "timing_by_people_in_frame": {
+    "3-4": {
+      "n_frames": 8,
+      "ms_per_frame_median": 15.380100026959553,
+      "fps_laptop": 65.0190829869191
+    },
+    "5+": {
+      "n_frames": 63,
+      "ms_per_frame_median": 8.687400026246905,
+      "fps_laptop": 115.10923831972036
+    }
+  },
+  "people_per_frame_max": 6,
+  "tracking": {
+    "n_frames": 71,
+    "n_gt": 359,
+    "tp": 265,
+    "fp": 39,
+    "fn": 94,
+    "idsw": 4,
+    "mota": 0.6183844011142061,
+    "recall": 0.7381615598885793,
+    "precision": 0.8717105263157895,
+    "n_gt_tracks": 8,
+    "mostly_tracked": 5,
+    "mostly_lost": 0
+  },
+  "tracking_by_crowd": {
+    "5+": {
+      "n_frames": 63,
+      "n_gt": 327,
+      "tp": 241,
+      "fp": 37,
+      "fn": 86,
+      "idsw": 4,
+      "mota": 0.6116207951070336,
+      "recall": 0.7370030581039755,
+      "precision": 0.8669064748201439
+    },
+    "3-4": {
+      "n_frames": 8,
+      "n_gt": 32,
+      "tp": 24,
+      "fp": 2,
+      "fn": 8,
+      "idsw": 0,
+      "mota": 0.6875,
+      "recall": 0.75,
+      "precision": 0.9230769230769231
+    }
+  },
+  "detection_only": {
+    "n_gt": 359,
+    "tp": 271,
+    "fp": 41,
+    "fn": 88,
+    "recall": 0.754874651810585,
+    "precision": 0.8685897435897436
+  },
+  "gt": {
+    "folder": "data\\mot15\\MOT15Labels\\train\\TUD-Campus",
+    "seqinfo": {
+      "name": "TUD-Campus",
+      "frame_rate": 25.0,
+      "seq_length": 71,
+      "width": 640,
+      "height": 480
+    },
+    "scale_applied": 1.0
+  },
+  "name": "TUD-Campus__256__centroid100_drop1000",
+  "model": "yolov8n_256_quant_pc_uf_od_coco-person",
+  "input_size": 256,
+  "tracker": {
+    "match": "centroid",
+    "match_dist": 100,
+    "min_iou": 0.3,
+    "drop_ms": 1000,
+    "max_tracks": 8,
+    "predict": false
+  },
+  "score_thresh": 0.25,
+  "environment": {
+    "python": "3.12.10",
+    "machine": "AMD64",
+    "timestamp": "2026-11-15T22:02:55"
+  }
+}

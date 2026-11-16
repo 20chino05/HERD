@@ -28,3 +28,6 @@ ai/outputs/
 firmware/**/Debug/
 firmware/**/Release/
 firmware/**/.settings/
+
+# Per-frame track dumps are large and reproducible from metrics.json settings
+ai/results/tracking/*/tracks.json

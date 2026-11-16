@@ -1,0 +1,134 @@
+{
+  "video": "data\\mot15\\PETS09-S2L1-raw.mp4",
+  "frames": 795,
+  "fps_source": 7.0,
+  "resolution": [
+    768,
+    576
+  ],
+  "timing_ms": {
+    "invoke": {
+      "mean": 25.409274967533754,
+      "median": 27.112399984616786,
+      "p95": 38.56122996658086
+    },
+    "detect_total": {
+      "mean": 26.926831697017164,
+      "median": 28.905800019856542,
+      "p95": 40.59425998711958
+    },
+    "tracker": {
+      "mean": 0.2556998735885341,
+      "median": 0.221800000872463,
+      "p95": 0.45263999490998674
+    },
+    "per_frame": {
+      "mean": 27.1825315706057,
+      "median": 29.11800000583753,
+      "p95": 41.02181998314335
+    }
+  },
+  "timing_by_people_in_frame": {
+    "1-2": {
+      "n_frames": 18,
+      "ms_per_frame_median": 25.498899980448186,
+      "fps_laptop": 39.21737803461212
+    },
+    "3-4": {
+      "n_frames": 158,
+      "ms_per_frame_median": 27.96935004880652,
+      "fps_laptop": 35.75342288093931
+    },
+    "5+": {
+      "n_frames": 619,
+      "ms_per_frame_median": 29.91800004383549,
+      "fps_laptop": 33.42469411507494
+    }
+  },
+  "people_per_frame_max": 8,
+  "tracking": {
+    "n_frames": 795,
+    "n_gt": 4476,
+    "tp": 3607,
+    "fp": 464,
+    "fn": 869,
+    "idsw": 139,
+    "mota": 0.6711349419124217,
+    "recall": 0.8058534405719392,
+    "precision": 0.8860230901498404,
+    "n_gt_tracks": 19,
+    "mostly_tracked": 11,
+    "mostly_lost": 0
+  },
+  "tracking_by_crowd": {
+    "3-4": {
+      "n_frames": 158,
+      "n_gt": 551,
+      "tp": 497,
+      "fp": 106,
+      "fn": 54,
+      "idsw": 14,
+      "mota": 0.6842105263157895,
+      "recall": 0.9019963702359347,
+      "precision": 0.824212271973466
+    },
+    "5+": {
+      "n_frames": 619,
+      "n_gt": 3889,
+      "tp": 3080,
+      "fp": 354,
+      "fn": 809,
+      "idsw": 122,
+      "mota": 0.6695808691180252,
+      "recall": 0.7919773720750836,
+      "precision": 0.8969132207338381
+    },
+    "1-2": {
+      "n_frames": 18,
+      "n_gt": 36,
+      "tp": 30,
+      "fp": 4,
+      "fn": 6,
+      "idsw": 3,
+      "mota": 0.6388888888888888,
+      "recall": 0.8333333333333334,
+      "precision": 0.8823529411764706
+    }
+  },
+  "detection_only": {
+    "n_gt": 4476,
+    "tp": 3771,
+    "fp": 537,
+    "fn": 705,
+    "recall": 0.8424932975871313,
+    "precision": 0.8753481894150418
+  },
+  "gt": {
+    "folder": "data\\mot15\\MOT15Labels\\train\\PETS09-S2L1",
+    "seqinfo": {
+      "name": "PETS09-S2L1",
+      "frame_rate": 7.0,
+      "seq_length": 795,
+      "width": 768,
+      "height": 576
+    },
+    "scale_applied": 1.0
+  },
+  "name": "PETS09-S2L1__256__iou30_drop1000",
+  "model": "yolov8n_256_quant_pc_uf_od_coco-person",
+  "input_size": 256,
+  "tracker": {
+    "match": "iou",
+    "match_dist": 200,
+    "min_iou": 0.3,
+    "drop_ms": 1000,
+    "max_tracks": 8,
+    "predict": false
+  },
+  "score_thresh": 0.25,
+  "environment": {
+    "python": "3.12.10",
+    "machine": "AMD64",
+    "timestamp": "2026-11-15T22:00:57"
+  }
+}

@@ -18,3 +18,16 @@ def test_draw_detections_with_no_boxes_is_a_plain_copy():
     img = np.full((20, 30, 3), 7, dtype=np.uint8)
     out = draw_detections(img, np.zeros((0, 4)), np.zeros((0,)))
     assert (out == img).all() and out is not img
+
+
+def test_draw_tracks_draws_the_box_in_pixels_and_leaves_the_input_alone():
+    import numpy as np
+
+    from herd_ai.draw import draw_tracks
+    from herd_ai.tracker import Track
+
+    img = np.zeros((100, 200, 3), dtype=np.uint8)
+    out = draw_tracks(img, [Track(3, 500, 500, 200, 400, 0, 0, 0, 0)], color=(255, 0, 0), thickness=1)
+    # center (100, 50) px, box 40 x 40 px -> left edge at x = 80
+    assert tuple(out[50, 80]) == (255, 0, 0)
+    assert img.sum() == 0
