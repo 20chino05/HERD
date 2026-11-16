@@ -1,0 +1,102 @@
+{
+  "video": "data\\mot15\\TUD-Stadtmitte-raw.mp4",
+  "frames": 179,
+  "fps_source": 25.0,
+  "resolution": [
+    640,
+    480
+  ],
+  "timing_ms": {
+    "invoke": {
+      "mean": 7.1543402236225555,
+      "median": 6.753400026354939,
+      "p95": 9.544589993311092
+    },
+    "detect_total": {
+      "mean": 7.777267595812908,
+      "median": 7.360899995546788,
+      "p95": 10.39798998972401
+    },
+    "tracker": {
+      "mean": 0.10916648085317548,
+      "median": 0.09899999713525176,
+      "p95": 0.17444997793063513
+    },
+    "per_frame": {
+      "mean": 7.886434076666083,
+      "median": 7.4807999189943075,
+      "p95": 10.596849984722212
+    }
+  },
+  "timing_by_people_in_frame": {
+    "5+": {
+      "n_frames": 179,
+      "ms_per_frame_median": 7.4807999189943075,
+      "fps_laptop": 133.6755441702064
+    }
+  },
+  "people_per_frame_max": 8,
+  "tracking": {
+    "n_frames": 179,
+    "n_gt": 1156,
+    "tp": 914,
+    "fp": 22,
+    "fn": 242,
+    "idsw": 14,
+    "mota": 0.759515570934256,
+    "recall": 0.7906574394463668,
+    "precision": 0.9764957264957265,
+    "n_gt_tracks": 10,
+    "mostly_tracked": 8,
+    "mostly_lost": 0
+  },
+  "tracking_by_crowd": {
+    "5+": {
+      "n_frames": 179,
+      "n_gt": 1156,
+      "tp": 914,
+      "fp": 22,
+      "fn": 242,
+      "idsw": 14,
+      "mota": 0.759515570934256,
+      "recall": 0.7906574394463668,
+      "precision": 0.9764957264957265
+    }
+  },
+  "detection_only": {
+    "n_gt": 1156,
+    "tp": 935,
+    "fp": 22,
+    "fn": 221,
+    "recall": 0.8088235294117647,
+    "precision": 0.9770114942528736
+  },
+  "gt": {
+    "folder": "data\\mot15\\MOT15Labels\\train\\TUD-Stadtmitte",
+    "seqinfo": {
+      "name": "TUD-Stadtmitte",
+      "frame_rate": 25.0,
+      "seq_length": 179,
+      "width": 640,
+      "height": 480
+    },
+    "scale_applied": 1.0
+  },
+  "name": "TUD-Stadtmitte__256__iou30_drop1000",
+  "model": "yolov8n_256_quant_pc_uf_od_coco-person",
+  "input_size": 256,
+  "tracker": {
+    "match": "iou",
+    "match_dist": 200,
+    "min_iou": 0.3,
+    "drop_ms": 1000,
+    "max_tracks": 8,
+    "predict": false
+  },
+  "score_thresh": 0.25,
+  "environment": {
+    "python": "3.12.10",
+    "machine": "AMD64",
+    "timestamp": "2026-11-15T22:02:41"
+  }
+}

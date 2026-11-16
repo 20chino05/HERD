@@ -1,0 +1,102 @@
+{
+  "video": "data\\mot15\\TUD-Stadtmitte-raw.mp4",
+  "frames": 179,
+  "fps_source": 25.0,
+  "resolution": [
+    640,
+    480
+  ],
+  "timing_ms": {
+    "invoke": {
+      "mean": 8.080943575709039,
+      "median": 7.25679995957762,
+      "p95": 12.56750997854396
+    },
+    "detect_total": {
+      "mean": 8.776137429710957,
+      "median": 7.88799999281764,
+      "p95": 14.298549975501372
+    },
+    "tracker": {
+      "mean": 0.09460502802316287,
+      "median": 0.08019997039809823,
+      "p95": 0.16185000422410664
+    },
+    "per_frame": {
+      "mean": 8.870742457734119,
+      "median": 7.974999898578972,
+      "p95": 14.724329952150583
+    }
+  },
+  "timing_by_people_in_frame": {
+    "5+": {
+      "n_frames": 179,
+      "ms_per_frame_median": 7.974999898578972,
+      "fps_laptop": 125.39185112443518
+    }
+  },
+  "people_per_frame_max": 8,
+  "tracking": {
+    "n_frames": 179,
+    "n_gt": 1156,
+    "tp": 929,
+    "fp": 22,
+    "fn": 227,
+    "idsw": 12,
+    "mota": 0.7742214532871973,
+    "recall": 0.8036332179930796,
+    "precision": 0.9768664563617245,
+    "n_gt_tracks": 10,
+    "mostly_tracked": 8,
+    "mostly_lost": 0
+  },
+  "tracking_by_crowd": {
+    "5+": {
+      "n_frames": 179,
+      "n_gt": 1156,
+      "tp": 929,
+      "fp": 22,
+      "fn": 227,
+      "idsw": 12,
+      "mota": 0.7742214532871973,
+      "recall": 0.8036332179930796,
+      "precision": 0.9768664563617245
+    }
+  },
+  "detection_only": {
+    "n_gt": 1156,
+    "tp": 935,
+    "fp": 22,
+    "fn": 221,
+    "recall": 0.8088235294117647,
+    "precision": 0.9770114942528736
+  },
+  "gt": {
+    "folder": "data\\mot15\\MOT15Labels\\train\\TUD-Stadtmitte",
+    "seqinfo": {
+      "name": "TUD-Stadtmitte",
+      "frame_rate": 25.0,
+      "seq_length": 179,
+      "width": 640,
+      "height": 480
+    },
+    "scale_applied": 1.0
+  },
+  "name": "TUD-Stadtmitte__256__centroid100_drop1000",
+  "model": "yolov8n_256_quant_pc_uf_od_coco-person",
+  "input_size": 256,
+  "tracker": {
+    "match": "centroid",
+    "match_dist": 100,
+    "min_iou": 0.3,
+    "drop_ms": 1000,
+    "max_tracks": 8,
+    "predict": false
+  },
+  "score_thresh": 0.25,
+  "environment": {
+    "python": "3.12.10",
+    "machine": "AMD64",
+    "timestamp": "2026-11-15T22:02:43"
+  }
+}

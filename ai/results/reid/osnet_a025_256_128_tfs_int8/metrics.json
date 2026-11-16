@@ -1,0 +1,173 @@
+{
+  "model": "osnet_a025_256_128_tfs_int8",
+  "model_path": "C:\\Users\\devin\\UCI\\HERD\\ai\\models\\osnet_a025_256_128_tfs_int8.tflite",
+  "embedding_dim": 128,
+  "dataset": {
+    "name": "Market-1501 (query vs bounding_box_test, 6 cameras)",
+    "n_query": 200,
+    "n_gallery": 2000,
+    "n_identities_query": 177,
+    "n_gallery_junk": 364,
+    "n_gallery_distractors": 287
+  },
+  "map": 0.0609935068186563,
+  "cmc": {
+    "rank1": 0.07792207792207792,
+    "rank5": 0.14935064935064934,
+    "rank10": 0.17532467532467533
+  },
+  "n_valid_queries": 154,
+  "pair_separation": {
+    "n_pos": 301,
+    "n_neg_sampled": 100000,
+    "pos_mean": 0.3273969292640686,
+    "pos_median": 0.32942110300064087,
+    "neg_mean": 0.4376107156276703,
+    "neg_median": 0.44562071561813354,
+    "thresholds": [
+      {
+        "threshold": 0.05,
+        "tpr": 0.0033222591362126247,
+        "fpr": 0.00012
+      },
+      {
+        "threshold": 0.1,
+        "tpr": 0.03322259136212625,
+        "fpr": 0.00293
+      },
+      {
+        "threshold": 0.15,
+        "tpr": 0.09634551495016612,
+        "fpr": 0.01539
+      },
+      {
+        "threshold": 0.2,
+        "tpr": 0.2026578073089701,
+        "fpr": 0.04525
+      },
+      {
+        "threshold": 0.25,
+        "tpr": 0.3089700996677741,
+        "fpr": 0.09722
+      },
+      {
+        "threshold": 0.3,
+        "tpr": 0.43521594684385384,
+        "fpr": 0.17049
+      },
+      {
+        "threshold": 0.35,
+        "tpr": 0.5780730897009967,
+        "fpr": 0.26564
+      },
+      {
+        "threshold": 0.4,
+        "tpr": 0.6943521594684385,
+        "fpr": 0.38112
+      },
+      {
+        "threshold": 0.45,
+        "tpr": 0.8006644518272426,
+        "fpr": 0.51222
+      },
+      {
+        "threshold": 0.5,
+        "tpr": 0.8837209302325582,
+        "fpr": 0.65127
+      },
+      {
+        "threshold": 0.55,
+        "tpr": 0.9302325581395349,
+        "fpr": 0.78246
+      },
+      {
+        "threshold": 0.6,
+        "tpr": 0.9867109634551495,
+        "fpr": 0.88676
+      },
+      {
+        "threshold": 0.65,
+        "tpr": 0.9933554817275747,
+        "fpr": 0.95416
+      },
+      {
+        "threshold": 0.7,
+        "tpr": 1.0,
+        "fpr": 0.98582
+      },
+      {
+        "threshold": 0.75,
+        "tpr": 1.0,
+        "fpr": 0.99678
+      },
+      {
+        "threshold": 0.8,
+        "tpr": 1.0,
+        "fpr": 0.99974
+      },
+      {
+        "threshold": 0.85,
+        "tpr": 1.0,
+        "fpr": 0.99999
+      },
+      {
+        "threshold": 0.9,
+        "tpr": 1.0,
+        "fpr": 1.0
+      },
+      {
+        "threshold": 0.95,
+        "tpr": 1.0,
+        "fpr": 1.0
+      },
+      {
+        "threshold": 1.0,
+        "tpr": 1.0,
+        "fpr": 1.0
+      }
+    ],
+    "recommended": {
+      "fpr_0.01": {
+        "threshold": 0.1336,
+        "tpr": 0.07973421926910298,
+        "fpr": 0.01
+      },
+      "fpr_0.05": {
+        "threshold": 0.2056,
+        "tpr": 0.20930232558139536,
+        "fpr": 0.05
+      }
+    }
+  },
+  "nearest_of_k": {
+    "2": 0.7489177489177489,
+    "3": 0.6212121212121212,
+    "5": 0.45454545454545453
+  },
+  "latency_ms": {
+    "mean": 10.077373272347772,
+    "median": 12.199899996630847,
+    "p95": 16.69982997700572,
+    "min": 2.5399000151082873,
+    "max": 18.66260002134368,
+    "n": 2200
+  },
+  "st_published": {
+    "map": 70.27,
+    "rank1": 92.0,
+    "rank5": 96.0,
+    "dataset": "DeepSportradar (basketball players)",
+    "n6570dk_ms": 7.22
+  },
+  "config": {
+    "seed": 0,
+    "threads": null,
+    "max_query": 200,
+    "max_gallery": 2000
+  },
+  "environment": {
+    "python": "3.12.10",
+    "machine": "AMD64",
+    "timestamp": "2026-11-15T21:59:00"
+  }
+}

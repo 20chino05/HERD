@@ -57,7 +57,8 @@ def _yolox(size: int, ap: float, ms: float) -> ModelInfo:
 def _osnet(alpha: str, ms: float) -> ModelInfo:
     """ST's person re-identification models (model zoo v4.0), 256x128 input, trained on DeepSportradar.
 
-    Not detectors: AP is None. Timing is ST's on the STM32N6570-DK with STEdgeAI Core 3.0.0.
+    Not detectors: AP is None. Timing is ST's on the STM32N6570-DK with STEdgeAI Core 4.0.0
+    (OSNet README, Nov 2026: 7.22 ms / 928 KiB internal RAM for 0.25; 71.29 ms / 2.6 MB + 2 MB external for 1.0).
     """
     d = f"osnet_a{alpha}_256_128_tfs"
     fn = f"{d}_int8.tflite"
@@ -72,8 +73,8 @@ MODEL_CATALOG: tuple[ModelInfo, ...] = (
     _yolox(256, 44.85, 9.42),
     _yolox(320, 51.17, 13.29),
     _yolox(416, 54.80, 21.30),
-    _osnet("025", 3.53),
-    _osnet("100", 13.44),
+    _osnet("025", 7.22),
+    _osnet("100", 71.29),
 )
 
 DEFAULT_MODEL = MODEL_CATALOG[1]  # yolov8n at 256: fits internal RAM, ~24 ms on the N6
