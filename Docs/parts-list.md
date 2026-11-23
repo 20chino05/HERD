@@ -18,8 +18,8 @@
 
 | Part | What it's for | Status | Options found so far | Price seen | Notes |
 |---|---|---|---|---|---|
-| STM32N6 dev board (NUCLEO-N657X0-Q) | Runs the AI | Bought: 2 arrived (Nov 2) | — | ~$75 (ST store) | Confirm the exact board model. |
-| Camera module | Captures video | Bought: 2 arrived (Nov 2) | ST-supported cameras that plug into the board: B-CAMS-IMX (5 MP color), STEVAL-66GYMAI1 (1.5 MP color), STEVAL-55G1MBI1 (0.56 MP black-and-white) | ~$57–84 depending on module and store | Every unit needs one. Confirm which model arrived. See "Camera" below. |
+| STM32N6 dev board (NUCLEO-N657X0-Q) | Runs the AI | Bought: 2 arrived (Nov 2) | NUCLEO-N657X0-Q (confirmed from the box) | ~$75 (ST store) | — |
+| Camera module | Captures video | Bought: 2 arrived (Nov 2) | InnoMaker CAM-IMX335-5MP (Sony IMX335, 5 MP color). ST's own module with the same sensor is the B-CAMS-IMX | — | **Check before plugging in:** it's a third-party module, not ST's, so its 22-pin connector pinout has to match the Nucleo's camera connector, and ST's IMX335 driver may need changes. See "Camera" below. |
 | LoRa radio module | Short alerts; the V1 radio in the hardware plan (role depends on the hardware team's call) | Maybe (disclaimer) | RAK3172 or Seeed Wio-E5 (simple text commands over a serial port); SX1262 modules as a backup | ~$7–10 | With ESP-NOW handling messages, LoRa may not be needed. Needs a 915 MHz antenna too. |
 | ESP32 board | Sends handoff messages between units over ESP-NOW | On hand (per the hardware plan) | The ESP32s the team already has; more if needed (e.g. Seeed XIAO ESP32C3) | On hand; ~$5 if more are needed | One per unit. Confirm how many the team has. See "Messages between units" below. |
 | Pan/tilt mount with two micro servos | Turns the camera to follow a person | Servos on hand (per Nader); mount to research (disclaimer) | SparkFun ROB-14391 kit; Adafruit Mini Pan-Tilt Kit 1967 (comes with two micro servos) | ~$11.50–19 (online snapshots) | Only the camera board would move, so its ribbon cable flexes. See "Pan/tilt" below. |

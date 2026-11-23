@@ -122,7 +122,9 @@ Template instructions: break milestones into weekly tasks, and assign each task 
 responsible member (split shared tasks into sub-tasks).
 
 **Phase 1: dev board prototype (V0).** Use the two STM32N6 development boards and two cameras that arrived
-on November 2 (exact models to confirm). The hardware plan uses ESP32 boards the
+on November 2: NUCLEO-N657X0-Q boards and InnoMaker CAM-IMX335-5MP cameras (Sony IMX335, the same sensor
+as ST's own camera module). The camera is third-party, so its connector pinout and ST's driver still
+need checking before it's plugged in. The hardware plan uses ESP32 boards the
 team already has for messages between units.
 
 **Phase 2: custom board (V1).** Design the team's own PCB around the STM32N6. The goal is a board
