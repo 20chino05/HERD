@@ -21,11 +21,20 @@ def test_results_load_from_the_committed_files():
 
 def test_page_renders_every_week_with_real_numbers():
     html = render_page(load_results(), reid_demo=[])
-    for heading in ("Week 4", "Week 5", "Week 6", "Week 7", "Live"):
+    for heading in ("Week 4", "Week 5", "Week 6", "Week 7", "Week 8", "Week 9", "Live"):
         assert heading in html
     assert "0.577" in html  # week 5 AP of the 256 model
     assert "PETS09-S2L1" in html
     assert "<table" in html and "/stream/pets" in html
+    assert "/results/linger/PETS09-S2L1_timeline.png" in html and "/results/follow/PETS09-S2L1_episode.png" in html
+    assert "FOLLOW_DEADBAND" in html
+
+
+def test_results_include_weeks_8_and_9():
+    r = load_results()
+    assert r["week8"] and r["week8"]["default"] == "120x8000"
+    assert set(r["week9"]) >= {"PETS09-S2L1", "TUD-Stadtmitte"}
+    assert r["parity"] and "identical" in r["parity"]
 
 
 @pytest.mark.skipif(not (YOLO.exists() and SOURCES["pets"].exists()), reason="model or PETS video missing")

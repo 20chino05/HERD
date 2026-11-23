@@ -36,11 +36,12 @@ Planning. According to the team's notes, two STM32N6 development boards and two 
 October 19, and the [proposal](Docs/proposal.md#estimated-deliverables-at-major-milestones)
 lays out what we think fits in the time we have.
 
-Done on the software side (Fall weeks 4 to 7, laptop): ST's ready-made person detector runs and is
+Done on the software side (Fall weeks 4 to 9, laptop): ST's ready-made person detector runs and is
 measured on COCO at the board's image sizes; ST's person re-identification model is measured on a
-6-camera dataset; the firmware's tracker is scored on public pedestrian video. See the write-ups for
-[weeks 4–5](Docs/software/2026-11-02-ai-weeks-4-5.md) and [weeks 6–7](Docs/software/2026-11-15-ai-weeks-6-7.md)
-and [`ai/README.md`](ai/README.md).
+6-camera dataset; the firmware's tracker, lingering rule and servo follow law are scored on public
+pedestrian video, with the C and its Python mirrors proven identical frame for frame. See the write-ups for
+[weeks 4–5](Docs/software/2026-11-02-ai-weeks-4-5.md), [weeks 6–7](Docs/software/2026-11-15-ai-weeks-6-7.md)
+and [weeks 8–9](Docs/software/2026-11-23-ai-weeks-8-9.md), and [`ai/README.md`](ai/README.md).
 
 ## Repository layout
 
@@ -79,5 +80,6 @@ Faculty Advisor: Boris Vaisband
 - [Meeting notes](Docs/meeting-notes.md): including the October 12 and 19 advisor feedback
 - [AI, Fall weeks 4–5](Docs/software/2026-11-02-ai-weeks-4-5.md): decisions, findings and measured results from running ST's person detector on a laptop
 - [AI, Fall weeks 6–7](Docs/software/2026-11-15-ai-weeks-6-7.md): ST's person re-identification model and the firmware's tracker measured on public datasets; settings for app_config.h
-- [AI setup and usage](ai/README.md): how to install and run the detector, the accuracy checks, and the local demo page (`python ai/scripts/demo_server.py`) that shows weeks 4 to 7 with the pipeline running live
+- [AI, Fall weeks 8–9](Docs/software/2026-11-23-ai-weeks-8-9.md): the lingering rule and the servo follow law measured on labeled video, the firmware changes that came out of it, C-vs-Python parity, and what the V1 schematic means for the firmware
+- [AI setup and usage](ai/README.md): how to install and run the detector, the accuracy checks, and the local demo page (`python ai/scripts/demo_server.py`) that shows weeks 4 to 9 with the pipeline running live
 - [Legacy: SAFE-Swarm](legacy/README.md): the original drone project, archived October 16, 2026

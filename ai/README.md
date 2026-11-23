@@ -134,6 +134,29 @@ thousandths of the frame, nearest center within `--match-dist` (TRACK_MATCH_DIST
 labels: recall, precision, id switches and MOTA, split by how many people were in the frame (1-2, 3-4,
 5+), next to ms per frame for the same bins. See `results/tracking/summary.md`.
 
+## Week 8: lingering on real video
+
+The firmware's rule (`behavior.c`: within 120/1000 of one spot for 8 s) is mirrored in `herd_ai/behavior.py`
+and scored against the same rule applied to the labeled tracks, with every false alarm and miss sorted by cause:
+
+```powershell
+python scripts/evaluate_linger.py          # all MOT15 clips, radius x time sweep, guard variants -> results/linger/
+python scripts/check_firmware_parity.py    # replays the labels through the C and the Python: results/firmware_parity.md
+```
+
+The parity script needs a C compiler; MSYS2's gcc in `C:/msys64/ucrt64/bin` is found automatically. The demo page's
+webcam stream shows the rule live: stand still for eight seconds and the box turns red.
+
+## Week 9: following with the servos, simulated
+
+`herd_ai/pantilt.py` mirrors `pantilt.c`, and `herd_ai/followsim.py` is a virtual pan camera over a labeled clip: the
+camera sees half the frame width at 60 degrees, pans until the view hits the frame edge, runs the firmware tracker on
+what it sees, applies each box to the follow law 30 ms later and steps the servos every 5 ms.
+
+```powershell
+python scripts/evaluate_follow.py --detector   # gain x speed x deadband sweep on three clips, real detector on PETS -> results/follow/
+```
+
 ## Week 6 board half: compile a model for the STM32N6
 
 The board runs the model on the Neural-ART NPU, and ST Edge AI Core is the compiler that gets it there. It turns a

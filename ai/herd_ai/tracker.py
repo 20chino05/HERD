@@ -48,6 +48,7 @@ class Track:
     first_seen_ms: int
     last_seen_ms: int
     hits: int = 1
+    score: int = 0  # percent, from the last matched detection
 
     def xyxy(self) -> tuple[float, float, float, float]:
         return self.cx - self.w / 2, self.cy - self.h / 2, self.cx + self.w / 2, self.cy + self.h / 2
@@ -95,12 +96,13 @@ class NearestTracker:
         self.predict = predict
         self.match = match
         self.min_iou = min_iou
-        self._tracks: list[Track] = []
+        self._slots: list[Track | None] = [None] * max_tracks  # fixed slots, like tracks[TRACK_MAX] in C
         self._next_id = 1
 
     @property
     def tracks(self) -> list[Track]:
-        return list(self._tracks)
+        """Active tracks in slot order, the order the firmware iterates them."""
+        return [t for t in self._slots if t is not None]
 
     def _predicted_center(self, t: Track, time_ms: int) -> tuple[float, float]:
         if not self.predict:
@@ -110,8 +112,8 @@ class NearestTracker:
 
     def _best_match(self, d: Detection, time_ms: int, claimed: set[int]) -> Track | None:
         best, best_score = None, None
-        for t in self._tracks:
-            if t.id in claimed:
+        for t in self._slots:
+            if t is None or t.id in claimed:
                 continue
             px, py = self._predicted_center(t, time_ms)
             if self.match == "centroid":
@@ -138,11 +140,12 @@ class NearestTracker:
                 t.cx, t.cy, t.w, t.h = d.cx, d.cy, d.w, d.h
                 t.last_seen_ms = time_ms
                 t.hits += 1
+                t.score = d.score
                 claimed.add(t.id)
-            elif len(self._tracks) < self.max_tracks:
-                t = Track(self._next_id, d.cx, d.cy, d.w, d.h, 0, 0, time_ms, time_ms)
+            elif None in self._slots:
+                t = Track(self._next_id, d.cx, d.cy, d.w, d.h, 0, 0, time_ms, time_ms, score=d.score)
                 self._next_id = self._next_id + 1 if self._next_id < MAX_ID else 1
-                self._tracks.append(t)
+                self._slots[self._slots.index(None)] = t  # first free slot, as tracker.c does
                 claimed.add(t.id)
-        self._tracks = [t for t in self._tracks if time_ms - t.last_seen_ms <= self.drop_ms]
-        return list(self._tracks)
+        self._slots = [None if t is not None and time_ms - t.last_seen_ms > self.drop_ms else t for t in self._slots]
+        return self.tracks
