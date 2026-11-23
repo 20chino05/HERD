@@ -134,6 +134,30 @@ thousandths of the frame, nearest center within `--match-dist` (TRACK_MATCH_DIST
 labels: recall, precision, id switches and MOTA, split by how many people were in the frame (1-2, 3-4,
 5+), next to ms per frame for the same bins. See `results/tracking/summary.md`.
 
+## Week 6 board half: compile a model for the STM32N6
+
+The board runs the model on the Neural-ART NPU, and ST Edge AI Core is the compiler that gets it there. It turns a
+TFLite file into `network.c` (the NPU program) plus a weights image for the board's external flash, and it reports
+RAM, flash and an estimated inference time before any hardware is touched.
+
+Install: https://www.st.com/en/development-tools/stedgeai-core.html (myST login; the online installer's login
+step is blocked on UCI-WiFi, so run it from home or a phone hotspot). Keep the default folder `C:\ST\STEdgeAI`.
+Then, from `ai/`:
+
+```powershell
+python scripts/compile_n6.py                      # analyze + generate the default YOLOv8n 256, reports in results/n6/
+python scripts/compile_n6.py --action analyze --model models/osnet_a025_256_128_tfs_int8.tflite
+```
+
+The script finds the compiler in `C:\ST\STEdgeAI\<version>` (or `STEDGEAI_HOME`), writes the generated code to
+`outputs/n6/<model>/` and files `*_report.txt` plus the command log under `results/n6/<model>/`. The firmware
+package the N6 unit builds on ([x-cube-n6-ai-people-detection-tracking](https://github.com/STMicroelectronics/x-cube-n6-ai-people-detection-tracking))
+was generated with ST Edge AI Core 3.0.0; a newer compiler needs its NPU runtime updated per ST's guide, or the
+build stops with "Possible mismatch in ll_aton library used".
+
+No local install? The same compiler runs in the browser at https://stedgeai-dc.st.com (ST Edge AI Developer
+Cloud): upload the TFLite file, pick STM32N6, download the generated files, and drop them in `outputs/n6/<model>/`.
+
 ## Models
 
 All from ST's model zoo, trained on COCO person, int8 per-channel quantized, uint8 RGB input, one
