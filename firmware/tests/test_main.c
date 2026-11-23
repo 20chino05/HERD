@@ -166,6 +166,16 @@ static void test_pantilt(void) {
   CHECK(pantilt_angle_to_us(-900) == SERVO_MIN_US);
   CHECK(pantilt_angle_to_us(5000) == SERVO_MAX_US);
 
+  /* Deadband: box jitter inside FOLLOW_DEADBAND must not move the camera. */
+  pantilt_init();
+  pantilt_update(0);
+  pantilt_follow(500 + FOLLOW_DEADBAND - 1, 500 - FOLLOW_DEADBAND + 1);
+  pantilt_update(100);
+  CHECK(pantilt_pan_x10() == 0 && pantilt_tilt_x10() == 0);
+  pantilt_follow(500 + FOLLOW_DEADBAND + 20, 500);
+  pantilt_update(200);
+  CHECK(pantilt_pan_x10() > 0);
+
   pantilt_init();
   uint32_t t = 0;
   pantilt_update(t);
@@ -183,6 +193,29 @@ static void test_pantilt(void) {
   CHECK(pantilt_at_limit(HERD_SIDE_RIGHT));
   CHECK(!pantilt_at_limit(HERD_SIDE_LEFT));
   CHECK(fake_servo_us(BOARD_SERVO_PAN) == pantilt_angle_to_us(PAN_MAX_DEG * 10));
+}
+
+/* ---------- real detections glue ---------- */
+
+static void test_detect_boxes(void) {
+  printf("detections: ST's boxes become a frame_t, most confident first, at most DETECT_MAX\n");
+  float boxes[10 * 4], conf[10];
+  for (int i = 0; i < 10; i++) {
+    boxes[4 * i] = 0.1f * (float)i; /* center x */
+    boxes[4 * i + 1] = 0.5f;
+    boxes[4 * i + 2] = 0.08f;
+    boxes[4 * i + 3] = 0.3f;
+    conf[i] = 0.3f + 0.05f * (float)i;
+  }
+  frame_t f;
+  CHECK(detect_boxes_to_frame(1234, boxes, conf, 10, &f) == DETECT_MAX);
+  CHECK(f.time_ms == 1234 && f.count == DETECT_MAX);
+  CHECK(f.det[0].x == 900 && f.det[0].score == 75); /* box 9, confidence 0.75, comes first */
+  CHECK(f.det[0].y == 500 && f.det[0].w == 80 && f.det[0].h == 300);
+  CHECK(f.det[DETECT_MAX - 1].x == 200); /* box 2 is the 8th most confident; 0 and 1 are dropped */
+  CHECK(detect_boxes_to_frame(1, boxes, conf, 0, &f) == 0 && f.count == 0);
+  boxes[0] = -0.2f; /* off the left edge: clamped to the frame */
+  CHECK(detect_boxes_to_frame(5, boxes, conf, 1, &f) == 1 && f.det[0].x == 0 && f.det[0].score == 30);
 }
 
 /* ---------- whole unit, fake person, nobody answers ---------- */
@@ -352,6 +385,7 @@ int main(int argc, char **argv) {
   test_msg_roundtrip();
   test_framing();
   test_pantilt();
+  test_detect_boxes();
   test_scenario_no_neighbor_answer();
   test_scenario_handoff_ok();
   test_expecting_pickup();

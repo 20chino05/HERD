@@ -17,6 +17,10 @@ run: unit_tests
 .DEFAULT_GOAL := run
 
 clean:
-	rm -f unit_tests
+	rm -f unit_tests unit_tests.exe trace_tool trace_tool.exe
 
 .PHONY: run clean
+
+# Replays recorded detections through the real tracker + lingering code (used by ai/scripts/check_firmware_parity.py).
+trace_tool: trace_main.c ../stm32/App/tracker.c ../stm32/App/behavior.c $(wildcard ../stm32/App/*.h)
+	$(CC) $(CFLAGS) trace_main.c ../stm32/App/tracker.c ../stm32/App/behavior.c -o $@

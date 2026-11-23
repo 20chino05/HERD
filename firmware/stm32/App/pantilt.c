@@ -39,9 +39,14 @@ void pantilt_init(void) {
 void pantilt_home(void) { pan_target_x10 = tilt_target_x10 = 0; }
 
 void pantilt_follow(int16_t x, int16_t y) {
-  /* How far off-center the box is, as an angle. */
-  int32_t err_pan = ((int32_t)x - 500) * CAMERA_HFOV_DEG * 10 / 1000;
-  int32_t err_tilt = (500 - (int32_t)y) * CAMERA_VFOV_DEG * 10 / 1000; /* up is positive */
+  /* How far off-center the box is; small errors are box jitter, not movement. */
+  int32_t ex = (int32_t)x - 500;
+  int32_t ey = 500 - (int32_t)y; /* up is positive */
+  if (ex > -FOLLOW_DEADBAND && ex < FOLLOW_DEADBAND) ex = 0;
+  if (ey > -FOLLOW_DEADBAND && ey < FOLLOW_DEADBAND) ey = 0;
+  /* ... as an angle. */
+  int32_t err_pan = ex * CAMERA_HFOV_DEG * 10 / 1000;
+  int32_t err_tilt = ey * CAMERA_VFOV_DEG * 10 / 1000;
   pan_target_x10 = clamp(pan_x10 + err_pan * FOLLOW_GAIN_PCT / 100, PAN_MIN_X10, PAN_MAX_X10);
   tilt_target_x10 = clamp(tilt_x10 + err_tilt * FOLLOW_GAIN_PCT / 100, TILT_MIN_X10, TILT_MAX_X10);
 }

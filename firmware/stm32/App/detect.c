@@ -1,4 +1,4 @@
-/* detect.c - fake detections for now (see detect.h). */
+/* detect.c - fake detections for now, plus the glue for the real ones (see detect.h). */
 #include "detect.h"
 
 #include <string.h>
@@ -12,17 +12,52 @@
 static uint32_t last_frame_ms;
 static bool have_frame;
 static int32_t camera_pan_x10, camera_tilt_x10;
+static frame_t submitted;
+static bool have_submitted;
 
 void detect_init(void) {
   have_frame = false;
   last_frame_ms = 0;
   camera_pan_x10 = 0;
   camera_tilt_x10 = 0;
+  have_submitted = false;
 }
 
 void detect_set_camera(int32_t pan_x10, int32_t tilt_x10) {
   camera_pan_x10 = pan_x10;
   camera_tilt_x10 = tilt_x10;
+}
+
+static int16_t to_thousandths(float v) {
+  if (v < 0.0f) v = 0.0f;
+  if (v > 1.0f) v = 1.0f;
+  return (int16_t)(v * 1000.0f + 0.5f);
+}
+
+uint8_t detect_boxes_to_frame(uint32_t time_ms, const float *cxcywh, const float *conf, uint8_t count, frame_t *out) {
+  bool taken[256] = {false};
+  memset(out, 0, sizeof(*out));
+  out->time_ms = time_ms;
+  while (out->count < DETECT_MAX) {
+    int best = -1;
+    for (int i = 0; i < count; i++) {
+      if (!taken[i] && (best < 0 || conf[i] > conf[best])) best = i;
+    }
+    if (best < 0) break;
+    taken[best] = true;
+    detection_t *d = &out->det[out->count++];
+    d->x = to_thousandths(cxcywh[4 * best + 0]);
+    d->y = to_thousandths(cxcywh[4 * best + 1]);
+    d->w = to_thousandths(cxcywh[4 * best + 2]);
+    d->h = to_thousandths(cxcywh[4 * best + 3]);
+    d->score = (uint8_t)(to_thousandths(conf[best]) / 10);
+  }
+  return out->count;
+}
+
+void detect_submit(const frame_t *frame) {
+  submitted = *frame;
+  have_submitted = true;
 }
 
 #if USE_FAKE_DETECTIONS
@@ -71,16 +106,20 @@ static void fake_frame(uint32_t now_ms, frame_t *out) {
 #endif
 
 bool detect_poll(uint32_t now_ms, frame_t *out) {
+#if USE_FAKE_DETECTIONS
   if (have_frame && (uint32_t)(now_ms - last_frame_ms) < FRAME_PERIOD_MS) return false;
   have_frame = true;
   last_frame_ms = now_ms;
 
   memset(out, 0, sizeof(*out));
   out->time_ms = now_ms;
-#if USE_FAKE_DETECTIONS
   fake_frame(now_ms, out);
-#else
-  /* TODO (Devin): copy the boxes from ST's person-detection pipeline into out->det. */
-#endif
   return true;
+#else
+  (void)now_ms;
+  if (!have_submitted) return false;
+  *out = submitted;
+  have_submitted = false;
+  return true;
+#endif
 }
