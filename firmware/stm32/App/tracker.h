@@ -4,6 +4,11 @@
  * Owner: Devin. Simple version: each box is matched to the nearest person
  * from the last frames. Good enough for one camera; swap in something
  * smarter later without changing the interface.
+ *
+ * Measured in week 7 on labeled video (ai/results/tracking): at 25 fps it
+ * loses nothing against the detector; id switches grow with crowding and
+ * low frame rates. Speed prediction and box-overlap matching were tried
+ * and did not help.
  */
 #ifndef TRACKER_H
 #define TRACKER_H
@@ -21,6 +26,7 @@ typedef struct {
   uint16_t id;
   int16_t x, y;           /* last position, thousandths of the frame */
   int16_t vx;             /* sideways speed, thousandths of the frame per second */
+  uint8_t score;          /* confidence of the last matched box, percent */
   uint32_t first_seen_ms;
   uint32_t last_seen_ms;
 } track_t;

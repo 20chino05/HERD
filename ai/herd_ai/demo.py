@@ -17,6 +17,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 
+from herd_ai.behavior import LingerDetector
 from herd_ai.detector import PersonDetector
 from herd_ai.draw import draw_tracks
 from herd_ai.paths import DATA_DIR, MODELS_DIR, OUTPUTS_DIR, RESULTS_DIR
@@ -78,11 +79,17 @@ def load_results(results_dir: Path = RESULTS_DIR) -> dict:
         if any(cells):
             sweep.append({"setting": setting, "label": label, "cells": cells})
     frame = results_dir / "tracking" / "PETS09-S2L1_frame381_tracked.jpg"
+    week8 = _read_json(results_dir / "linger" / "PETS09-S2L1.json")
+    week9 = {s: m for s in ("PETS09-S2L1", "TUD-Stadtmitte", "ADL-Rundle-6") if (m := _read_json(results_dir / "follow" / f"{s}.json"))}
+    parity = results_dir / "firmware_parity.md"
     return {
         "week4": week4,
         "week5": week5,
         "week6": week6,
         "week7": {"runs": runs, "defaults": defaults, "pets": pets, "sequences": sequences, "sweep": sweep, "frame": frame.name if frame.exists() else None},
+        "week8": week8,
+        "week9": week9,
+        "parity": parity.read_text(encoding="utf-8") if parity.exists() else None,
     }
 
 
@@ -154,14 +161,19 @@ def _placeholder(text: str, size=(640, 360)) -> np.ndarray:
 class LiveTracker:
     """Detector + firmware tracker on a video file or the webcam, one JPEG per frame."""
 
-    def __init__(self, model_path: Path, score_thresh: float = 0.25, match_dist: int = 200, drop_ms: int = 1000, max_tracks: int = 8):
+    def __init__(self, model_path: Path, score_thresh: float = 0.25, match_dist: int = 200, drop_ms: int = 1000, max_tracks: int = 8,
+                 linger_radius: int = 120, linger_time_ms: int = 8000):
         self.det = PersonDetector(model_path, score_thresh)
         self.match_dist, self.drop_ms, self.max_tracks = match_dist, drop_ms, max_tracks
+        self.linger_radius, self.linger_time_ms = linger_radius, linger_time_ms
         self._lock = threading.Lock()  # the interpreter is not thread-safe: one stream at a time
         self.status: dict = {"source": None, "frame": 0, "tracked": 0, "ms": 0.0}
 
     def _tracker(self) -> NearestTracker:
         return NearestTracker(match_dist=self.match_dist, drop_ms=self.drop_ms, max_tracks=self.max_tracks)
+
+    def _linger(self) -> LingerDetector:
+        return LingerDetector(self.linger_radius, self.linger_time_ms, self.max_tracks)
 
     def frames(self, source: str, keep_going, pace: bool = True, jpeg_quality: int = 80):
         webcam = source == "webcam"
@@ -177,7 +189,7 @@ class LiveTracker:
             fps = cap.get(cv2.CAP_PROP_FPS) or 25.0
             if webcam or fps > 30:
                 fps = 30.0
-            tracker = self._tracker()
+            tracker, linger = self._tracker(), self._linger()
             label = SOURCE_LABELS.get(source, source)
             frame_idx = 0
             t_start = time.perf_counter()
@@ -189,7 +201,7 @@ class LiveTracker:
                         if webcam:
                             break
                         cap.set(cv2.CAP_PROP_POS_FRAMES, 0)  # loop the clip
-                        tracker = self._tracker()
+                        tracker, linger = self._tracker(), self._linger()
                         frame_idx = 0
                         continue
                     frame_idx += 1
@@ -198,16 +210,29 @@ class LiveTracker:
                     res = self.det.detect(rgb)
                     h, w = rgb.shape[:2]
                     tracks = tracker.update(detections_from_pixels(res.boxes, res.scores, w, h), time_ms)
+                    linger.update(tracks, time_ms)
                     seen = [t for t in tracks if t.last_seen_ms == time_ms]
-                    shown = draw_tracks(rgb, seen)
+                    lingering = [t for t in seen if linger.is_lingering(t.id)]
+                    shown = draw_tracks(rgb, [t for t in seen if not linger.is_lingering(t.id)])
+                    shown = draw_tracks(shown, lingering, color=(225, 60, 45))
+                    standing: dict[int, float] = {}
+                    for t in seen:  # the week 8 rule: how long each person has stood within 120/1000 of one spot
+                        s_ms = linger.standing_ms(t.id, time_ms)
+                        if s_ms is not None and s_ms >= 1000:
+                            standing[t.id] = s_ms / 1000.0
+                            x1, _y1, _x2, y2 = t.xyxy()
+                            txt = "LINGERING" if linger.is_lingering(t.id) else f"standing {s_ms / 1000:.0f} s"
+                            col = (225, 60, 45) if linger.is_lingering(t.id) else (255, 160, 0)
+                            cv2.putText(shown, txt, (int(x1 / 1000 * w), min(int(y2 / 1000 * h) + 18, h - 6)), cv2.FONT_HERSHEY_SIMPLEX, 0.55, col, 2, cv2.LINE_AA)
                     ms = (time.perf_counter() - tick) * 1000.0
-                    hud = f"{label.split(':')[0]}   frame {frame_idx}   {len(seen)} tracked   {ms:.0f} ms on this CPU"
+                    hud = f"{label.split(':')[0]}   frame {frame_idx}   {len(seen)} tracked   {len(lingering)} lingering   {ms:.0f} ms on this CPU"
                     bar = shown.copy()
                     cv2.rectangle(bar, (0, 0), (w, 32), (0, 0, 0), -1)
                     shown = cv2.addWeighted(bar, 0.55, shown, 0.45, 0)
                     cv2.putText(shown, hud, (12, 22), cv2.FONT_HERSHEY_SIMPLEX, 0.62, (255, 255, 255), 1, cv2.LINE_AA)
                     ok, buf = cv2.imencode(".jpg", cv2.cvtColor(shown, cv2.COLOR_RGB2BGR), [cv2.IMWRITE_JPEG_QUALITY, jpeg_quality])
-                    info = {"source": source, "frame": frame_idx, "tracked": len(seen), "ids": [t.id for t in seen], "ms": ms}
+                    info = {"source": source, "frame": frame_idx, "tracked": len(seen), "ids": [t.id for t in seen], "ms": ms,
+                            "lingering": [t.id for t in lingering], "standing_s": standing}
                     self.status = info
                     yield buf.tobytes(), info
                     if pace:
@@ -343,12 +368,13 @@ def render_page(results: dict, reid_demo: list[dict], model_name: str = "yolov8n
       <button type="button" class="stop" id="stop">Stop</button>
     </div>
   </div>
-  <p class="muted">Amber boxes and ids come from the tracker; the id survives as long as the same person is matched frame to frame. Video clips loop. The webcam needs no setup; if none is attached the frame says so.</p>
+  <p class="muted">Amber boxes and ids come from the tracker; the id survives as long as the same person is matched frame to frame. Under a box, "standing N s" counts how long that person has stayed within 120/1000 of one spot; at 8 s the box turns red and says LINGERING, which is the firmware's rule (behavior.c). Video clips loop. The webcam needs no setup: stand still in front of it for eight seconds.</p>
   <div class="flow">
     <div class="step done"><b>Camera frame</b>videos from MOT15, or the webcam</div>
     <div class="step done"><b>Detector</b>ST YOLOv8n 256 int8, week 4 and 5</div>
     <div class="step done"><b>Tracker</b>firmware algorithm, week 7</div>
-    <div class="step todo"><b>Lingering</b>week 8, next</div>
+    <div class="step done"><b>Lingering</b>firmware rule, week 8</div>
+    <div class="step done"><b>Following</b>servo law simulated, week 9</div>
     <div class="step todo"><b>Handoff</b>position and timing, appearance as tie-breaker (week 6)</div>
   </div>
 </section>"""
@@ -505,22 +531,98 @@ def render_page(results: dict, reid_demo: list[dict], model_name: str = "yolov8n
 </section>"""
         )
 
+    # --- week 8 ---
+    w8 = results.get("week8")
+    if w8:
+        d = w8["settings"][w8["default"]]
+        delay = f"{d['delay_median_ms'] / 1000:.1f} s median, {d['delay_max_ms'] / 1000:.1f} s worst" if d.get("delay_median_ms") is not None else "-"
+        var_rows = "".join(
+            f"<tr><td>{_e(name)}</td><td class='n'>{v['hits']}</td><td class='n'>{v['repeats']}</td><td class='n'>{v['false_ghost']}</td>"
+            f"<td class='n'>{v['false_occupied_spot']}</td><td class='n'>{v['false_early']}</td><td class='n'>{v['missed']}</td></tr>"
+            for name, v in w8.get("variants", {}).items()
+        )
+        parts.append(
+            f"""
+<section id="week8">
+  <h2>Week 8<small>Lingering: the firmware rule, within 120/1000 of one spot for 8 seconds, run through the real pipeline on the PETS crowd clip ({w8['duration_ms'] / 1000:.0f} s at {w8['fps']:g} fps).</small></h2>
+  <p class="lead"><code>behavior.c</code> was rebuilt line for line in Python (identical output to the C on all 1,570 labeled frames, see <code>ai/results/firmware_parity.md</code>), then run behind the detector and tracker. A labeled stay is the same rule applied to the labeled tracks with their perfect ids; a hit points at a person who really had been standing that long.</p>
+  <table>
+    <thead><tr><th class="n">labeled stays</th><th class="n">hits</th><th class="n">repeats</th><th class="n">nobody there</th><th class="n">a group was there</th><th class="n">too early</th><th class="n">missed</th><th>delay</th></tr></thead>
+    <tbody><tr><td class="n">{d['gt_stays']}</td><td class="n">{d['hits']}</td><td class="n">{d['repeats']}</td><td class="n">{d['false_ghost']}</td><td class="n">{d['false_occupied_spot']}</td><td class="n">{d['false_early']}</td><td class="n">{d['missed']}</td><td>{_e(delay)}</td></tr></tbody>
+  </table>
+  <div class="figs"><figure><img src="/results/linger/PETS09-S2L1_timeline.png" alt="When the lingering rule fires on PETS09-S2L1, per labeled person" loading="lazy"><figcaption>Every labeled person who stood still for 8 s (black ticks) and what the pipeline reported: hits, group alarms, and two alarms on a static object at the top right of the frame.</figcaption></figure></div>
+  <h3>Guards tried on the same clip</h3>
+  <table>
+    <thead><tr><th>setting</th><th class="n">hits</th><th class="n">repeats</th><th class="n">nobody there</th><th class="n">a group was there</th><th class="n">too early</th><th class="n">missed</th></tr></thead>
+    <tbody>{var_rows}</tbody>
+  </table>
+  <div class="callout">What week 8 decided:
+    <ul>
+      <li>Keep LINGER_RADIUS 120 and LINGER_TIME_MS 8000. Smaller radii missed more; longer times found fewer stays without removing alarms.</li>
+      <li>Two guards are now in the firmware behind switches, both OFF: requiring the person to have walked in lost real hits without removing the static-object alarms, and a detection-score floor removed one ghost at the cost of a hit.</li>
+      <li>{d.get('missed_restarted', 0)} of the {d['missed']} misses are the greedy tracker swapping ids between neighbours standing in a group while the person was detected the whole time; {d['false_occupied_spot']} of the {d['false']} alarms were a group occupying the spot, which is arguably lingering. Next: a spot-based rule that times the place rather than the id.</li>
+      <li>The other clips are too short for an 8 s rule. The webcam stream above is the team-member test: stand still for eight seconds.</li>
+    </ul>
+  </div>
+</section>"""
+        )
+
+    # --- week 9 ---
+    w9 = results.get("week9") or {}
+    if w9:
+        names = {
+            "gain0_speed120_dead0": "fixed camera (no following)",
+            "gain30_speed120_dead0": "firmware default: gain 30 %, 120 deg/s",
+            "gain30_speed120_dead40": "default + deadband 40 (now FOLLOW_DEADBAND in app_config.h)",
+            "gain15_speed60_dead0": "gain 15 %, 60 deg/s",
+            "gain15_speed60_dead0+detector": "gain 15 %, 60 deg/s, with the real detector on the camera's view",
+            "gain30_speed120_dead0_10fps": "firmware default at 10 fps",
+            "gain30_speed120_dead0_5fps": "firmware default at 5 fps",
+        }
+
+        def frow(seq: str, lab: str, r: dict) -> str:
+            return (f"<tr><td>{_e(seq)}</td><td>{_e(names.get(lab, lab))}</td><td class='n'>{r['episodes']}</td><td class='n'>{_pct(r['in_band_frac'])}</td>"
+                    f"<td class='n'>{_pct(r['visible_frac'])}</td><td class='n'>{r['lost']}</td><td class='n'>{r['handoff_ready']}</td><td class='n'>{r['reversals_per_min']:.1f}</td></tr>")
+
+        rows9 = "".join(frow(seq, lab, m["results"][lab]) for seq, m in w9.items() for lab in names if lab in m["results"])
+        parts.append(
+            f"""
+<section id="week9">
+  <h2>Week 9<small>Following with the servos: the firmware's aiming law (pantilt.c) driving a virtual pan camera over the labeled clips, one episode per labeled person.</small></h2>
+  <p class="lead">The camera sees half the frame width (60 deg) and pans until the view hits the frame edge. Each frame goes through the firmware tracker, the target's box reaches the follow law 30 ms later, and the servos step every 5 ms like <code>app_loop()</code>. "Centered" is the labeled person within 150/1000 of the middle of the view, so an id switch onto someone else counts against the law. "Handoff-ready" is the person reaching the edge of the view at the pan limit, where <code>unit_fsm.c</code> sends "heading your way".</p>
+  <table>
+    <thead><tr><th>sequence</th><th>setting</th><th class="n">people</th><th class="n">centered</th><th class="n">in view</th><th class="n">lost</th><th class="n">handoff-ready</th><th class="n">reversals / min</th></tr></thead>
+    <tbody>{rows9}</tbody>
+  </table>
+  <div class="figs"><figure><img src="/results/follow/PETS09-S2L1_episode.png" alt="One person followed by the virtual camera on PETS09-S2L1" loading="lazy"><figcaption>The longest PETS episode: the camera pan (amber) chases the labeled person (black) and holds at the 30 deg limit of this scene; below, where the person sits in the view, following versus a fixed camera.</figcaption></figure></div>
+  <div class="callout">What week 9 decided:
+    <ul>
+      <li>Following works as written: centered time goes from 11 to 34 % with a fixed camera to 49 to 69 % with the law, and far fewer people are lost before the pan limit.</li>
+      <li>FOLLOW_GAIN_PCT 30 stays; 15 to 30 are equivalent, 50 and above overshoot and lose people at 7 fps. SERVO_MAX_SPEED_DPS 120 is not the limit.</li>
+      <li>FOLLOW_DEADBAND 40 added to <code>pantilt.c</code>: same centering, 15 to 40 % fewer direction reversals, so box jitter no longer twitches the servos.</li>
+      <li>With the real detector on the camera's view the PETS result drops to 54 % centered and 12 lost: the small far people of this clip are the detector's limit from week 5, not the law's.</li>
+    </ul>
+  </div>
+</section>"""
+        )
+
     parts.append(
         """
 <section id="next">
-  <h2>Next<small>Week 8 and the board.</small></h2>
-  <p>Lingering: the firmware already defines it (within 120/1000 of one spot for 8 seconds). Next is to run that rule on the tracked video above and on a team-member clip to pick the radius and time, and to see how often an id switch would reset the timer on a real loiterer.</p>
-  <p>Board: confirm the InnoMaker camera's pinout, install ST Edge AI Core 4.0.0, and put the detector on one Nucleo through ST's deployment flow. Everything on this page then runs on the unit instead of the laptop.</p>
-  <p class="muted">Write-ups: Docs/software/2026-11-02-ai-weeks-4-5.md and Docs/software/2026-11-15-ai-weeks-6-7.md. Pull requests 6 and 8 on the team repo.</p>
+  <h2>Next<small>Week 10 and the board.</small></h2>
+  <p>Week 10 is the one-camera demo: spot lingering, follow, and log. On the laptop that is the webcam stream above with the follow law reporting what the servos would do; on the board it needs the pieces below.</p>
+  <p>Board: install ST Edge AI Core off campus (its login server stalls on UCI-WiFi), compile the detector with <code>scripts/compile_n6.py</code>, flash ST's people-detection package on the Nucleo, then replace its model and drop in <code>tracker.c</code>, <code>behavior.c</code> and <code>pantilt.c</code> with these settings. The InnoMaker camera's pinout still has to be checked against the board's connector first.</p>
+  <p>Lingering on crowds: try a spot-based rule (time the place, not the id) so id swaps inside a group stop restarting the clock.</p>
+  <p class="muted">Write-ups: Docs/software/2026-11-02-ai-weeks-4-5.md, 2026-11-15-ai-weeks-6-7.md and 2026-11-23-ai-weeks-8-9.md.</p>
 </section>"""
     )
 
-    nav = " ".join(f'<a href="#{k}">{v}</a>' for k, v in (("live", "Live"), ("week4", "Week 4"), ("week5", "Week 5"), ("week6", "Week 6"), ("week7", "Week 7"), ("next", "Next")))
+    nav = " ".join(f'<a href="#{k}">{v}</a>' for k, v in (("live", "Live"), ("week4", "Week 4"), ("week5", "Week 5"), ("week6", "Week 6"), ("week7", "Week 7"), ("week8", "Week 8"), ("week9", "Week 9"), ("next", "Next")))
     return f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Open Herd AI demo</title><style>{CSS}</style></head>
 <body>
-<header class="top"><h1>Open Herd</h1><span class="sub">The AI side, Fall weeks 4 to 7, running on this laptop</span><nav>{nav}</nav></header>
+<header class="top"><h1>Open Herd</h1><span class="sub">The AI side, Fall weeks 4 to 9, running on this laptop</span><nav>{nav}</nav></header>
 <main>{"".join(parts)}</main>
 <script>{JS}</script>
 </body></html>"""

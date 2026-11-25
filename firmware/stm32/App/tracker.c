@@ -43,6 +43,7 @@ void tracker_update(const frame_t *frame) {
       if (dt > 0) t->vx = (int16_t)(((int32_t)d->x - t->x) * 1000 / (int32_t)dt);
       t->x = d->x;
       t->y = d->y;
+      t->score = d->score;
       t->last_seen_ms = frame->time_ms;
       matched[best] = true;
       continue;
@@ -58,6 +59,7 @@ void tracker_update(const frame_t *frame) {
       t->x = d->x;
       t->y = d->y;
       t->vx = 0;
+      t->score = d->score;
       t->first_seen_ms = frame->time_ms;
       t->last_seen_ms = frame->time_ms;
       matched[k] = true;

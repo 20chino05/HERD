@@ -3,6 +3,11 @@
  *
  * For the second board: set UNIT_ID to 2, NEIGHBOR_LEFT_ID to 1 and
  * NEIGHBOR_RIGHT_ID to HERD_ID_NONE (the two units then face each other's sides).
+ *
+ * The tracker, lingering and follow numbers were measured on labeled pedestrian
+ * video with the laptop mirrors in ai/ (see Docs/software/2026-11-15-ai-weeks-6-7.md
+ * and 2026-11-23-ai-weeks-8-9.md); ai/scripts/check_firmware_parity.py proves the
+ * mirrors match this code.
  */
 #ifndef APP_CONFIG_H
 #define APP_CONFIG_H
@@ -33,6 +38,15 @@
 #define LINGER_RADIUS 120      /* moving less than this still counts as standing still */
 #define TRACK_MATCH_DIST 200   /* max jump between frames to be called the same person */
 
+/* ---- Lingering guards (week 8). Both measured on labeled video and left OFF: on a crowd they lost
+   real hits without removing the alarms caused by the detector. Keep the switches for the board tests. ---- */
+#ifndef LINGER_REQUIRE_MOTION
+#define LINGER_REQUIRE_MOTION 0 /* 1 = only someone who walked in (moved more than LINGER_RADIUS) can linger */
+#endif
+#ifndef LINGER_MIN_SCORE
+#define LINGER_MIN_SCORE 0      /* the last detection score (percent) must be at least this */
+#endif
+
 /* ---- Camera and servos ---- */
 #define CAMERA_HFOV_DEG 60     /* horizontal field of view; check the InnoMaker lens */
 #define CAMERA_VFOV_DEG 45     /* vertical field of view */
@@ -41,7 +55,8 @@
 #define TILT_MIN_DEG (-30)
 #define TILT_MAX_DEG 30
 #define EXPECT_PAN_DEG 60      /* where to point when a neighbor says someone is coming */
-#define FOLLOW_GAIN_PCT 30     /* how much of the aiming error to fix each frame */
+#define FOLLOW_GAIN_PCT 30     /* how much of the aiming error to fix each frame (15-30 measured best; above 50 overshoots at low frame rates) */
+#define FOLLOW_DEADBAND 40     /* ignore aiming errors smaller than this (thousandths of the frame): box jitter must not twitch the servos */
 #define SERVO_MAX_SPEED_DPS 120 /* fastest turn, degrees per second */
 #define PAN_REVERSED 0         /* set to 1 if the camera turns the wrong way */
 #define TILT_REVERSED 0
